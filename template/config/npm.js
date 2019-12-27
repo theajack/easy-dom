@@ -7,7 +7,7 @@ module.exports = {
             intro: 'Easy-Dom 便捷操作dom的js库',
             npm: 'npm',
             install: 'easy-dom',
-            script: 'https://www.theajack.com/cnchar/cdn/easydom.latest.min.js',
+            script: 'https://www.theajack.com/easy-dom/cdn/easydom.latest.min.js',
         },
         'LICENSE': {
             author: 'theajack'

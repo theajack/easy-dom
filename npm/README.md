@@ -26,7 +26,7 @@ let el = $.create('div'); // 返回一个 Ele 类型的元素，封装了dom操�
 #### 0.2 script 标签引入
 
 ```html
-<script src="https://www.theajack.com/cnchar/cdn/easydom.latest.min.js"></script>
+<script src="https://www.theajack.com/easy-dom/cdn/easydom.latest.min.js"></script>
 <script>
     var el = EasyDom.create('div');
 </script>
