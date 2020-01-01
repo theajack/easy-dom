@@ -9,13 +9,13 @@
 #### 0.1 npm 方式安装
 
 ```
-npm i easy-dom
+npm i easy-dom-uti
 ```
 
 使用
 
 ```js
-import $ from 'easy-dom';
+import $ from 'easy-dom-uti';
 
 let el = $.create('div'); // 返回一个 Ele 类型的元素，封装了dom操作的方法
 ...
