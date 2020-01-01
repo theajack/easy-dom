@@ -12,7 +12,7 @@ module.exports = {
     ],
     'libraryName': 'EasyDom', // cdn global name
     'cdnFileName': 'easydom',
-    'version': '0.0.13',
+    'version': '0.0.14',
     'npmExternals': {
         // example
         // 'md5': 'md5'

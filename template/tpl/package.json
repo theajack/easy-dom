@@ -1,10 +1,10 @@
 {
   "name": "${name}",
   "version": "${version}",
-  "description": "easy-dom",
+  "description": "原生操作dom元素的简易封装的js库",
   "main": "index.js",
   "keywords": [
-    "原生操作dom元素的简易封装的js库"
+    "easy-dom"
   ],
   "author": "${author}",
   "license": "MIT"

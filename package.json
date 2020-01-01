@@ -1,19 +1,19 @@
 {
     "name": "easy-dom",
-    "version": "0.0.13",
+    "version": "0.0.14",
     "description": "原生操作dom元素的简易封装",
     "scripts": {
         "build:cdn": "webpack --config webpack-config/build.js --env.mode=script && npm run copy-latest",
-        "build:npm": "npm run copy-npm && npm run copy-tnpm && npm run render-tpl",
+        "build:npm": "npm run copy-npm && npm run render-tpl",
         "publish": "npm publish npm",
         "dev": "webpack-dev-server --open --config webpack-config/dev.js",
         "lint": "eslint src --ext js",
         "copy-latest": "node ./helper/copy-latest.js",
         "modify-version": "node ./helper/modify-version.js",
         "copy-npm": "node ./helper/copy-npm.js",
-        "copy-tnpm": "node ./tnpm/copy-tnpm.js",
         "render-tpl": "node ./template/execute.js",
-        "publish:tnpm": "node ./tnpm/publish.js"
+        "build": "npm run build:npm && npm run build:cdn && npm run modify-version && node ./helper/copy-git-code.js",
+        "build:gitcode": "cd easy-dom && npm run build"
     },
     "author": "theajack",
     "repository": {

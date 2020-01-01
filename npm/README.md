@@ -1,5 +1,3 @@
-
-
 # [easy-dom](https://github.com/theajack/easy-dom)
 
 ## Easy-Dom 便捷操作dom的js库

@@ -1,10 +1,10 @@
 {
   "name": "easy-dom",
-  "version": "0.0.13",
-  "description": "easy-dom",
+  "version": "0.0.14",
+  "description": "原生操作dom元素的简易封装的js库",
   "main": "index.js",
   "keywords": [
-    "原生操作dom元素的简易封装的js库"
+    "easy-dom"
   ],
   "author": "theajack",
   "license": "MIT"

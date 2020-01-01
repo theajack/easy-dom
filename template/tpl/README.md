@@ -1,5 +1,3 @@
-${head}
-
 # [easy-dom](${gitRepo})
 
 ## ${intro}
