@@ -10,6 +10,7 @@
 
 ```
 npm i easy-dom-util
+
 ```
 
 使用
