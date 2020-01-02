@@ -1,6 +1,6 @@
 {
     "name": "easy-dom",
-    "version": "0.0.14",
+    "version": "0.0.15",
     "description": "原生操作dom元素的简易封装",
     "scripts": {
         "build:cdn": "webpack --config webpack-config/build.js --env.mode=script && npm run copy-latest",

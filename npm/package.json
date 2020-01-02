@@ -1,6 +1,6 @@
 {
-  "name": "easy-dom",
-  "version": "0.0.14",
+  "name": "easy-dom-util",
+  "version": "0.0.15",
   "description": "原生操作dom元素的简易封装的js库",
   "main": "index.js",
   "keywords": [
