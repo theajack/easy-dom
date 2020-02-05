@@ -1,3 +1,5 @@
+import parseTag from './parseTag';
+
 let class_prefix = '';
 export function classPrefix (pf, func) {
     class_prefix = pf;
@@ -13,9 +15,19 @@ export function clearClassPrefix () {
 function checkPrefix (cls) {
     return class_prefix + cls;
 }
+
+
 export class Ele {
     constructor ({tag, ele}) {
-        this.el = ele ? ele : document.createElement(tag);
+        if (ele) {
+            this.el = ele;
+        } else {
+            let res = parseTag(tag);
+            this.el = document.createElement(res.tag);
+            if (res.cls) {this.cls(res.cls);}
+            if (res.attr) {this.attr(res.attr);}
+            if (res.id) {this.id(res.id);}
+        }
     }
     dom () {
         return this.el;
@@ -60,6 +72,15 @@ export class Ele {
         return this;
     }
 
+    hasAttr (name) {
+        return this.el.hasAttribute(name);
+    }
+
+    rmAttr (name) {
+        this.el.removeAttribute(name);
+        return this;
+    }
+
     style (name, value) {
         if (typeof value === 'undefined') {
             if (name instanceof Array) { // 根据数组批量获取样式
@@ -92,17 +113,23 @@ export class Ele {
         return this;
     }
 
+    value (val) {
+        if (typeof val === 'undefined') {return this.el.value;}
+        this.el.value = val;
+        return this;
+    }
+
     html (html) {
         if (typeof html === 'undefined') {return this.el.innerHTML;}
         this.el.innerHTML = html;
         return this;
     }
 
-    click (func) {
-        return this.on('click', func);
+    click (func, useCapture) {
+        return this.on('click', func, useCapture);
     }
 
-    on (name, func) {
+    on (name, func, useCapture = false) {
         if (typeof name === 'object') {
             for (let k in name) {
                 this.on(k, name[k]);
@@ -112,7 +139,7 @@ export class Ele {
         if (typeof func !== 'function') {
             throw new Error('事件类型应该为 function');
         }
-        this.el.addEventListener(name, func, false);
+        this.el.addEventListener(name, func, useCapture);
         return this;
     }
 
@@ -150,15 +177,52 @@ export class Ele {
         }
         return this;
     }
+    toggleClass (name) {
+        return this.hasClass(name) ? this.rmClass(name) : this.addClass(name);
+    }
 
     append (...eles) {
+        if (eles[0] instanceof Array) {
+            eles = eles[0];
+        }
         eles.forEach((el) => {
             this.el.appendChild(checkDom(el));
         });
         return this;
     }
 
+    insert (...eles) {
+        let index = eles.shift();
+        if (eles[0] instanceof Array) {
+            eles = eles[0];
+        }
+        let el = this.child(index);
+        if (el) {
+            eles.forEach((ele) => {
+                this.el.insertBefore(checkDom(ele), el.el);
+            });
+        } else {
+            this.append(...eles);
+        }
+        return this;
+    }
+
+    prepend (...eles) {
+        return this.insert(0, ...eles);
+    }
+
+    before (...eles) {
+        return this.parent().insert(this.index(), ...eles);
+    }
+    after (...eles) {
+        return this.parent().insert(this.index() + 1, ...eles);
+    }
+
     remove (arg) {
+        if (typeof arg === 'undefined') {
+            this.parent().remove(this);
+            return;
+        }
         if (typeof arg === 'number') {
             this.el.removeChild(this.el.children[arg]);
         } else {
@@ -167,16 +231,85 @@ export class Ele {
         return this;
     }
 
-    parent () {
-        return new Ele({ele: this.el.parentNode});
+    empty () {
+        return this.html('');
     }
+
+    parent (index) {
+        if (typeof index === 'number') {
+            if (index < 1) {return null;};
+            let parent = this;
+            for (let i = 0; i < index; i++) {
+                parent = parent.parent();
+                if (!parent) {
+                    return null;
+                }
+            }
+            return parent;
+        } else {
+            if (this.el.parentElement) {
+                return new Ele({ele: this.el.parentElement});
+            }
+            return null;
+        }
+    }
+
+    data (name, value) {
+        if (typeof this.el._ed_data === 'undefined') {this.el._ed_data = {};}
+        let data = this.el._ed_data;
+        if (typeof name === 'undefined') {return data;}
+        if (typeof name === 'object') {
+            if (name === null) {
+                data = {};
+            } else {
+                for (let k in name) {
+                    this.data(k, name[k]);
+                }
+            }
+        } else {
+            if (value === null) {
+                delete data[name];
+            } else if (typeof value === 'undefined') {
+                return data[name];
+            } else {
+                data[name] = value;
+            }
+        }
+        return this;
+    }
+
+    index () {
+        var a = this.parent().child();
+        for (var i = 0; i < a.length; i++) {
+            if (a[i].el == this.el) {
+                return i;
+            }
+        }
+        return -1;
+    }
+    next (i = 1) {
+        return this.parent().child(this.index() + i);
+    }
+    prev (i = 1) {
+        return this.next(-i);
+    }
+
     child (i) {
-        if (i) {
+        if (typeof i === 'number') {
+            if (i >= this.el.children.length || i < 0) {
+                return null;
+            }
             return new Ele({ele: this.el.children[i]});
         }
         return Array.prototype.slice.apply(this.el.children).map((dom) => {
             return new Ele({ele: dom});
         });
+    }
+    brother (i) {
+        if (typeof i === 'number') {
+            return this.parent().child(i);
+        }
+        return this.parent().child();
     }
 
     exe (cb) {
@@ -308,7 +441,7 @@ export function checkDom (el) {
     } else if (typeof el === 'string') {
         return document.querySelector(el);
     } else {
-        return el.dom();
+        return el.el;
     }
 }
 

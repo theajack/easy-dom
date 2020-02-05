@@ -1,8 +1,10 @@
+const tnpm = false;
+
+let target = ['npm'];
+if (tnpm) target.push('tnpm');
+
 module.exports = {
-    target: [
-        'npm',
-        'tnpm',
-    ],
+    target,
     tpl: [
         'README.md',
         'LICENSE',

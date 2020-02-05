@@ -10,6 +10,10 @@ exports.query = _query;
 exports.create = create;
 exports.Ele = void 0;
 
+var _parseTag = _interopRequireDefault(require("./parseTag"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
@@ -54,7 +58,24 @@ function () {
 
     _classCallCheck(this, Ele);
 
-    this.el = ele ? ele : document.createElement(tag);
+    if (ele) {
+      this.el = ele;
+    } else {
+      var res = (0, _parseTag["default"])(tag);
+      this.el = document.createElement(res.tag);
+
+      if (res.cls) {
+        this.cls(res.cls);
+      }
+
+      if (res.attr) {
+        this.attr(res.attr);
+      }
+
+      if (res.id) {
+        this.id(res.id);
+      }
+    }
   }
 
   _createClass(Ele, [{
@@ -112,6 +133,17 @@ function () {
       return this;
     }
   }, {
+    key: "hasAttr",
+    value: function hasAttr(name) {
+      return this.el.hasAttribute(name);
+    }
+  }, {
+    key: "rmAttr",
+    value: function rmAttr(name) {
+      this.el.removeAttribute(name);
+      return this;
+    }
+  }, {
     key: "style",
     value: function style(name, value) {
       var _this = this;
@@ -156,6 +188,16 @@ function () {
       return this;
     }
   }, {
+    key: "value",
+    value: function value(val) {
+      if (typeof val === 'undefined') {
+        return this.el.value;
+      }
+
+      this.el.value = val;
+      return this;
+    }
+  }, {
     key: "html",
     value: function html(_html) {
       if (typeof _html === 'undefined') {
@@ -167,12 +209,14 @@ function () {
     }
   }, {
     key: "click",
-    value: function click(func) {
-      return this.on('click', func);
+    value: function click(func, useCapture) {
+      return this.on('click', func, useCapture);
     }
   }, {
     key: "on",
     value: function on(name, func) {
+      var useCapture = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+
       if (_typeof(name) === 'object') {
         for (var k in name) {
           this.on(k, name[k]);
@@ -185,7 +229,7 @@ function () {
         throw new Error('事件类型应该为 function');
       }
 
-      this.el.addEventListener(name, func, false);
+      this.el.addEventListener(name, func, useCapture);
       return this;
     }
   }, {
@@ -235,6 +279,11 @@ function () {
       return this;
     }
   }, {
+    key: "toggleClass",
+    value: function toggleClass(name) {
+      return this.hasClass(name) ? this.rmClass(name) : this.addClass(name);
+    }
+  }, {
     key: "append",
     value: function append() {
       var _this2 = this;
@@ -243,14 +292,81 @@ function () {
         eles[_key] = arguments[_key];
       }
 
+      if (eles[0] instanceof Array) {
+        eles = eles[0];
+      }
+
       eles.forEach(function (el) {
         _this2.el.appendChild(checkDom(el));
       });
       return this;
     }
   }, {
+    key: "insert",
+    value: function insert() {
+      var _this3 = this;
+
+      for (var _len2 = arguments.length, eles = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+        eles[_key2] = arguments[_key2];
+      }
+
+      var index = eles.shift();
+
+      if (eles[0] instanceof Array) {
+        eles = eles[0];
+      }
+
+      var el = this.child(index);
+
+      if (el) {
+        eles.forEach(function (ele) {
+          _this3.el.insertBefore(checkDom(ele), el.el);
+        });
+      } else {
+        this.append.apply(this, _toConsumableArray(eles));
+      }
+
+      return this;
+    }
+  }, {
+    key: "prepend",
+    value: function prepend() {
+      for (var _len3 = arguments.length, eles = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+        eles[_key3] = arguments[_key3];
+      }
+
+      return this.insert.apply(this, [0].concat(eles));
+    }
+  }, {
+    key: "before",
+    value: function before() {
+      var _this$parent;
+
+      for (var _len4 = arguments.length, eles = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+        eles[_key4] = arguments[_key4];
+      }
+
+      return (_this$parent = this.parent()).insert.apply(_this$parent, [this.index()].concat(eles));
+    }
+  }, {
+    key: "after",
+    value: function after() {
+      var _this$parent2;
+
+      for (var _len5 = arguments.length, eles = new Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
+        eles[_key5] = arguments[_key5];
+      }
+
+      return (_this$parent2 = this.parent()).insert.apply(_this$parent2, [this.index() + 1].concat(eles));
+    }
+  }, {
     key: "remove",
     value: function remove(arg) {
+      if (typeof arg === 'undefined') {
+        this.parent().remove(this);
+        return;
+      }
+
       if (typeof arg === 'number') {
         this.el.removeChild(this.el.children[arg]);
       } else {
@@ -260,16 +376,106 @@ function () {
       return this;
     }
   }, {
+    key: "empty",
+    value: function empty() {
+      return this.html('');
+    }
+  }, {
     key: "parent",
-    value: function parent() {
-      return new Ele({
-        ele: this.el.parentNode
-      });
+    value: function parent(index) {
+      if (typeof index === 'number') {
+        if (index < 1) {
+          return null;
+        }
+
+        ;
+        var parent = this;
+
+        for (var i = 0; i < index; i++) {
+          parent = parent.parent();
+
+          if (!parent) {
+            return null;
+          }
+        }
+
+        return parent;
+      } else {
+        if (this.el.parentElement) {
+          return new Ele({
+            ele: this.el.parentElement
+          });
+        }
+
+        return null;
+      }
+    }
+  }, {
+    key: "data",
+    value: function data(name, value) {
+      if (typeof this.el._ed_data === 'undefined') {
+        this.el._ed_data = {};
+      }
+
+      var data = this.el._ed_data;
+
+      if (typeof name === 'undefined') {
+        return data;
+      }
+
+      if (_typeof(name) === 'object') {
+        if (name === null) {
+          data = {};
+        } else {
+          for (var k in name) {
+            this.data(k, name[k]);
+          }
+        }
+      } else {
+        if (value === null) {
+          delete data[name];
+        } else if (typeof value === 'undefined') {
+          return data[name];
+        } else {
+          data[name] = value;
+        }
+      }
+
+      return this;
+    }
+  }, {
+    key: "index",
+    value: function index() {
+      var a = this.parent().child();
+
+      for (var i = 0; i < a.length; i++) {
+        if (a[i].el == this.el) {
+          return i;
+        }
+      }
+
+      return -1;
+    }
+  }, {
+    key: "next",
+    value: function next() {
+      var i = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+      return this.parent().child(this.index() + i);
+    }
+  }, {
+    key: "prev",
+    value: function prev() {
+      var i = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+      return this.next(-i);
     }
   }, {
     key: "child",
     value: function child(i) {
-      if (i) {
+      if (typeof i === 'number') {
+        if (i >= this.el.children.length || i < 0) {
+          return null;
+        }
+
         return new Ele({
           ele: this.el.children[i]
         });
@@ -280,6 +486,15 @@ function () {
           ele: dom
         });
       });
+    }
+  }, {
+    key: "brother",
+    value: function brother(i) {
+      if (typeof i === 'number') {
+        return this.parent().child(i);
+      }
+
+      return this.parent().child();
     }
   }, {
     key: "exe",
@@ -451,7 +666,7 @@ function checkDom(el) {
   } else if (typeof el === 'string') {
     return document.querySelector(el);
   } else {
-    return el.dom();
+    return el.el;
   }
 }
 
