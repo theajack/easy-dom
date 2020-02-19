@@ -171,7 +171,7 @@ export class Ele {
         return new Ele({ele: this.el.parentNode});
     }
     child (i) {
-        if (i) {
+        if (typeof i === 'number') {
             return new Ele({ele: this.el.children[i]});
         }
         return Array.prototype.slice.apply(this.el.children).map((dom) => {
