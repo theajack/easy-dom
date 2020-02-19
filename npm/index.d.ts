@@ -5,13 +5,16 @@ export class Ele {
     el: HTMLElement;
     dom(): HTMLElement;
     attr(a:string|object, b?: string): Ele|string;
+    hasAttr(a:string): boolean;
+    rmAttr(a:string): Ele;
     style(a:string|object, b?: string): Ele|string;
     text(text?: string): Ele|string;
+    value(value?: string): Ele|string;
     html(html?: string): Ele|string;
     cls(cls?: string): Ele|string;
     id(id?: string): Ele|string;
-    click(func: (event: Event)=>{}): Ele;
-    on(a:string|object, b?:Function): Ele;
+    click(func: (event: Event)=>{}, useCapture?: boolean): Ele;
+    on(a:string|object, b?:Function, useCapture?: boolean): Ele;
     render(opt: {
         html:string, 
         method?: object, 
@@ -24,10 +27,20 @@ export class Ele {
     rmClass(cls: string): Ele;
     hasClass(cls: string): boolean;
     replaceClass(ca: string, cb:string): Ele;
-    append(...args: Array<HTMLElement|Ele>):  Ele;
-    remove(child: number|Ele): Ele;
-    parent(): Ele;
-    child(index?: number): Ele|Array<Ele>;
+    append(...args: Array<HTMLElement|Ele|Array<HTMLElement|Ele>>):  Ele;
+    insert(index: number, ...args: Array<HTMLElement|Ele|Array<HTMLElement|Ele>>): Ele;
+    prepend(...args: Array<HTMLElement|Ele|Array<HTMLElement|Ele>>): Ele;
+    before(...args: Array<HTMLElement|Ele|Array<HTMLElement|Ele>>): Ele;
+    after(...args: Array<HTMLElement|Ele|Array<HTMLElement|Ele>>): Ele;
+    remove(child?: number|Ele): Ele;
+    empty(): Ele;
+    data(name?: string|object|null, value?: any): any;
+    parent(index?: number): Ele|null;
+    child(index?: number): Ele|Array<Ele>|null;
+    brother(index?: number): Ele|Array<Ele>|null;
+    index(): number;
+    next(index?: number): Ele|null;
+    prev(index?: number): Ele|null;
     exe(callback: (el: HTMLElement)=>{}): Ele;
     src(src: string): Ele;
     query(selector: string): Array<Ele>;

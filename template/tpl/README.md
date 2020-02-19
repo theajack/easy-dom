@@ -41,11 +41,16 @@ Ele 元素上面的方法大都支持链式调用，Ele元素有以下方法可�
 | 方法 | 参数 | 返回值 | 说明 |
 | :--: | :--: | :--: | :--: |
 | dom | -- | HTMLElement | 返回对应的原生dom元素 |
-| attr | json/name/name,value | Ele/string/Ele | 设置或获取元素属性 |
-| style | json/name/name,value | Ele/string/Ele | 设置或获取元素样式 |
+| attr | json/name,value/-- | Ele/string/Ele | 设置或获取元素属性 |
+| data | json/name/null/--,value/null/-- | any | 对dom元素暂存和操作一些数据 |
+| hasAttr | string | boolean | 判断是否有某属性 |
+| rmAttr | string | Ele/string/Ele | 删除属性 |
+| style | json/name,value | Ele/string/Ele | 设置或获取元素样式 |
 | text | [string] | string/Ele | 设置或获取元素innerText |
+| value | [string] | string/Ele | 设置或获取元素value |
 | html | [string] | string/Ele | 设置或获取元素innerHTML |
-| cls | [string] | string/Ele | 给元素添加类或者获取元素的类名 |
+| empty | -- | Ele | 清空元素内容 |
+| cls | [string] | string/Ele | 给元素设置类或者获取元素的类名 |
 | id | [string] | string/Ele | 给元素设置id或者获取元素的id |
 | click | function | Ele | 设置元素 click 事件 |
 | on | json/name,func | Ele | 设置元素的事件 |
@@ -54,15 +59,22 @@ Ele 元素上面的方法大都支持链式调用，Ele元素有以下方法可�
 | rmClass | string | Ele | 移除某个类 |
 | hasClass | string | boolean | 判断是否有某个类 |
 | replaceClass | string,string | Ele | 替换类 |
-| append | ...Array[dom/Ele] | Ele | 给元素插入孩子节点 |
-| remove | int/Ele | Ele | 根据位置或者ele元素删除孩子节点 |
-| parent | -- | Ele | 获取父元素 |
-| child | [index] | Ele/Array[Ele] | 获取第几个或全部子元素 |
+| append | ...Array[dom/Ele] / Array[dom/Ele] | Ele | 给元素插入孩子节点 |
+| insert | index, ...Array[dom/Ele] / Array[dom/Ele] | Ele | 指定位置插入孩子 |
+| prepend | ...Array[dom/Ele] / Array[dom/Ele] | Ele | 头部插入孩子 |
+| before | ...Array[dom/Ele] / Array[dom/Ele] | Ele | 在元素前面插入同级元素 |
+| after | ...Array[dom/Ele] / Array[dom/Ele] | Ele | 在元素后面插入同级元素 |
+| remove | int/Ele/-- | Ele/-- | 根据位置或者ele元素删除孩子节点，或删除自身 |
+| parent | [index] | Ele/null | 获取元素的父元素或第n级父元素 |
+| index | -- | number | 获取元素在父元素中的位置 |
+| child | [index] | Ele/Array[Ele]/null | 获取第几个或全部子元素 |
+| next | [index] | Ele/null| 获取元素的前一个或前第n个元素 |
+| prev | [index] | Ele/null | 获取元素的后一个或后第n个元素 |
 | exe | function(dom){} | Ele | 以Ele为this执行一个方法，回调参数为对应的dom元素 |
 | src | string | Ele | 设置dom的src属性 |
 | query | selector | Array[Ele] | 根据css选择器查询元素的所有孩子 |
 
-详细使用：
+部分api使用实例：
 
 基本使用
 
@@ -73,6 +85,12 @@ let el = $.create('div')
     .click(()=>{
         alert('click')
     })
+```
+
+emmet 风格
+
+```js
+let el = $.create('div#app.cls1.cls2[attr1=1][attr2]')
 ```
 
 render方法
@@ -95,6 +113,20 @@ el.render({
         <div @el='div2'></div>
     `
 })
+```
+
+.data() 用法
+
+```js
+el.data(); // 获取 data 对象
+el.data(null); // 清空 data 对象
+el.data('name', 'test'); // 设置一个数据 
+el.data('name');  // 获取一个数据
+el.data('name', null);  // 移除一个数据 
+el.data({ // 批量操作
+    name: null, // 移除一个数据 
+    age: 12 // 设置一个数据 
+});
 ```
 
 Ele 元素只有一个属性 就是 .el , 获取对应的dom 元素
