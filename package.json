@@ -1,10 +1,10 @@
 {
     "name": "easy-dom",
-    "version": "0.0.20",
+    "version": "0.0.21",
     "description": "原生操作dom元素的简易封装",
     "scripts": {
         "build:cdn": "webpack --config webpack-config/build.js --env.mode=script && npm run copy-latest",
-        "build:npm": "npm run copy-npm && npm run render-tpl",
+        "build:npm": "npm run render-tpl && npm run copy-npm",
         "publish": "npm publish npm",
         "dev": "webpack-dev-server --open --config webpack-config/dev.js",
         "lint": "eslint src --ext js",
