@@ -1,4 +1,4 @@
-const tnpm = false;
+const tnpm = true;
 
 let target = ['npm'];
 if (tnpm) target.push('tnpm');
