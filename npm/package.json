@@ -1,10 +1,10 @@
 {
   "name": "easy-dom-util",
-  "version": "0.0.23",
+  "version": "0.0.24",
   "description": "原生操作dom元素的简易封装的js库",
   "main": "index.js",
-  "unpkg": "https://cdn.jsdelivr.net/gh/theajack/easy-dom/cdn/easydom.latest.min.js",
-  "jsdelivr": "https://cdn.jsdelivr.net/gh/theajack/easy-dom/cdn/easydom.latest.min.js",
+  "unpkg": "easydom.min.js",
+  "jsdelivr": "easydom.min.js",
   "keywords": [
     "easy-dom"
   ],

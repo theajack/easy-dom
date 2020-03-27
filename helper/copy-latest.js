@@ -8,7 +8,12 @@ function copyLatest () {
             path.basename = path.basename.replace(version, 'latest');
             return path;
         }))
-        .pipe(gulp.dest('cdn'));
+        .pipe(gulp.dest('cdn'))
+        .pipe(rename(function (path) {
+            path.basename = path.basename.replace('latest.', '');
+            return path;
+        }))
+        .pipe(gulp.dest('npm'));
 }
 
 copyLatest();
