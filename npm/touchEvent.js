@@ -77,14 +77,10 @@ function buildTouchWithMouse(event, type) {
     rotationAngle: 0,
     screenX: event.screenX,
     screenY: event.screenY,
-    target: event.target,
-    type: type
+    target: event.target
   }];
-
-  if (type !== 'touchend') {
-    event.touches = es;
-  }
-
+  event.touchType = type;
+  event.touches = type === 'touchend' ? [] : es;
   event.changedTouches = es;
   return event;
 }

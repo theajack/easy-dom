@@ -12,6 +12,8 @@ exports.Ele = void 0;
 
 var _parseTag = _interopRequireDefault(require("./parseTag"));
 
+var _render2 = require("./render");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
@@ -510,49 +512,9 @@ function () {
     }
   }, {
     key: "render",
-    value: function render(_ref2) {
-      var html = _ref2.html,
-          _ref2$method = _ref2.method,
-          method = _ref2$method === void 0 ? {} : _ref2$method,
-          _ref2$result = _ref2.result,
-          result = _ref2$result === void 0 ? null : _ref2$result;
-      this.html(zipHtml(html));
-      var el = {};
-
-      if (typeof result === 'function') {
-        var els = this.query('[\\@el]');
-
-        for (var i = 0; i < els.length; i++) {
-          var item = els[i];
-          el[item.attr('@el')] = item;
-          item.attr('@el', null);
-        }
-
-        result.call({
-          el: this,
-          method: method
-        }, el);
-      }
-
-      var list = this.query('[\\@event]');
-
-      for (var _i = 0; _i < list.length; _i++) {
-        var _item = list[_i];
-        var res = buildEventResult(_item);
-
-        if (method[res.name]) {
-          var _method$res$name;
-
-          _item.on(res.event, (_method$res$name = method[res.name]).bind.apply(_method$res$name, [{
-            el: this,
-            bindEl: el,
-            self: _item,
-            method: method
-          }].concat(_toConsumableArray(res.args))));
-        }
-      }
-
-      return this;
+    value: function render() {
+      var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+      return _render2.render.call(this, options);
     }
   }, {
     key: "query",
@@ -572,39 +534,6 @@ function () {
 }();
 
 exports.Ele = Ele;
-
-function buildEventResult(item) {
-  var arr = item.attr('@event').split(':');
-  item.attr('@event', null);
-  var event = 'click',
-      name,
-      args = [];
-
-  if (arr.length === 1) {
-    name = arr[0];
-  } else {
-    event = arr[0];
-    name = arr[1];
-  }
-
-  if (name.indexOf('(') !== -1) {
-    var arg = name.match(/\(.*\)/);
-
-    if (arg !== null) {
-      var str = arg[0].replace(/'/g, '"');
-      str = "[".concat(str.substr(1, str.length - 2), "]");
-      args = JSON.parse(str);
-    }
-
-    name = name.substr(0, name.indexOf('('));
-  }
-
-  return {
-    event: event,
-    name: name,
-    args: args
-  };
-}
 
 function getRegExp(name) {
   return new RegExp('(^| )' + name + '($| )');
@@ -655,10 +584,6 @@ function getCssNumberValue(a, b) {
 }
 
 ;
-
-function zipHtml(html) {
-  return html.replace(new RegExp('\\n *', 'g'), '').replace(new RegExp('<!--(.|\\n)*?-->', 'g'), '').trim();
-}
 
 function checkDom(el) {
   if (el instanceof HTMLElement) {
