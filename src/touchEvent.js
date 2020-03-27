@@ -26,20 +26,20 @@ export function registTouchEvent ({
         $.query(el).on({
             'mousedown': (e) => {
                 isMouseDown = true;
-                touchStart(buildTouchWithMouse(e));
+                touchStart(buildTouchWithMouse(e, 'touchstart'));
             }
         });
         $.query(document.body).on({
             'mousemove': (e) => {
                 e.preventDefault(); // 阻止默认的处理方式(防止拖拽选中效果)
                 if (isMouseDown) {
-                    touchMove(buildTouchWithMouse(e));
+                    touchMove(buildTouchWithMouse(e, 'touchmove'));
                 }
             },
             'mouseup': (e) => {
                 if (isMouseDown) {
                     isMouseDown = false;
-                    touchEnd(buildTouchWithMouse(e, 'end'));
+                    touchEnd(buildTouchWithMouse(e, 'touchend'));
                 }
             }
         });
@@ -52,11 +52,7 @@ function isMobile () {
 }
 
 function buildTouchWithMouse (event, type) {
-    let attr = 'touches';
-    if (type === 'end') {
-        attr = 'changedTouches';
-    }
-    event[attr] = [{
+    let es = [{
         clientX: event.clientX,
         clientY: event.clientY,
         force: 1,
@@ -69,6 +65,11 @@ function buildTouchWithMouse (event, type) {
         screenX: event.screenX,
         screenY: event.screenY,
         target: event.target,
+        type
     }];
+    if (type !== 'touchend') {
+        event.touches = es;
+    }
+    event.changedTouches = es;
     return event;
 }
