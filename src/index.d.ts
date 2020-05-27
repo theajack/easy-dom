@@ -76,7 +76,8 @@ export interface ToolStatic {
         touchMove?: (event: TouchEvent|PCBuildTouchEvent)=>{},
         touchEnd?: (event: TouchEvent|PCBuildTouchEvent)=>{}
     }): void;
-    windowSize(): {width: number, height: number};
+    windowSize(useInner?: boolean): {width: number, height: number};
+    isMobile(): false | string;
     version: string;
 }
 
