@@ -13,7 +13,10 @@ export function clearClassPrefix () {
     class_prefix = '';
 }
 
-function checkPrefix (cls) {
+function checkPrefix (cls, withPrefix = true) {
+    if(!withPrefix){
+        return cls;
+    }
     return class_prefix + cls;
 }
 
@@ -23,7 +26,7 @@ export class Ele {
         if (ele) {
             this.el = ele;
         } else {
-            let res = parseTag(tag);
+            let res = parseTag(tag, class_prefix);
             this.el = document.createElement(res.tag);
             if (res.cls) {this.cls(res.cls);}
             if (res.attr) {this.attr(res.attr);}
@@ -144,8 +147,8 @@ export class Ele {
         return this;
     }
 
-    addClass (cls) {
-        cls = checkPrefix(cls);
+    addClass (cls, withPrefix = true) {
+        cls = checkPrefix(cls, withPrefix);
         if (!this.hasClass(cls)) {
             if (this.el.className === '') {
                 this.el.className = cls;
@@ -156,21 +159,21 @@ export class Ele {
         return this;
     }
 
-    hasClass (cls) {
-        cls = checkPrefix(cls);
+    hasClass (cls, withPrefix = true) {
+        cls = checkPrefix(cls, withPrefix);
         return getRegExp(cls).test(this.el.className);
     }
 
-    rmClass (cls) {
-        cls = checkPrefix(cls);
+    rmClass (cls, withPrefix = true) {
+        cls = checkPrefix(cls, withPrefix);
         if (this.hasClass(cls)) {
             this.el.className = this.el.className.replace(getRegExp(cls), ' ').trim();
         }
         return this;
     }
-    replaceClass (a, b) {
-        a = checkPrefix(a);
-        b = checkPrefix(b);
+    replaceClass (a, b, withPrefix = true) {
+        a = checkPrefix(a, withPrefix);
+        b = checkPrefix(b, withPrefix);
         if (this.hasClass(a)) {
             this.el.className = this.el.className.replace(getRegExp(a), ' ' + b + ' ').trim();
         } else {
@@ -187,9 +190,22 @@ export class Ele {
             eles = eles[0];
         }
         eles.forEach((el) => {
-            this.el.appendChild(checkDom(el));
+            if(!el){return;}
+            let dom = checkDom(el);
+            this.el.appendChild(dom);
+            if(typeof dom.__ed_mounted === 'function'){
+                setTimeout(()=>{
+                    let El = query(dom)
+                    dom.__ed_mounted.call(El, El, this);
+                    dom.__ed_mounted = null
+                })
+            }
         });
         return this;
+    }
+
+    name (name){
+        return this.attr('el-name', name);
     }
 
     insert (...eles) {
@@ -302,6 +318,9 @@ export class Ele {
             }
             return new Ele({ele: this.el.children[i]});
         }
+        if(typeof i === 'string'){
+            return this.query(`[el-name="${i}"]`, true);
+        }
         return Array.prototype.slice.apply(this.el.children).map((dom) => {
             return new Ele({ele: dom});
         });
@@ -313,8 +332,13 @@ export class Ele {
         return this.parent().child();
     }
 
-    exe (cb) {
-        cb.call(this, this.dom());
+    created (cb) {
+        cb.call(this, this);
+        return this;
+    }
+    // 被其他元素append
+    mounted(fn){
+        this.el.__ed_mounted = fn;
         return this;
     }
 
@@ -327,13 +351,26 @@ export class Ele {
         return render.call(this, options);
     }
 
-    query (selector) {
+    query (selector, one = false) {
+        if(one){
+            let el = this.el.querySelector(selector);
+            if(el){
+                return query(el);
+            }
+            return null;
+        }
         let list = this.el.querySelectorAll(selector);
         let res = [];
         for (let i = 0; i < list.length; i++) {
             res.push(query(list[i]));
         }
         return res;
+    }
+    hide(){
+        return this.style('display', 'none');
+    }
+    show(display = 'block'){
+        return this.style('display', display);
     }
 }
 

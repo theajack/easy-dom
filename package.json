@@ -1,6 +1,6 @@
 {
     "name": "easy-dom",
-    "version": "0.0.26",
+    "version": "0.0.27",
     "description": "原生操作dom元素的简易封装",
     "scripts": {
         "build:cdn": "webpack --config webpack-config/build.js --env.mode=script && npm run copy-latest",
@@ -13,7 +13,8 @@
         "copy-npm": "node ./helper/copy-npm.js",
         "render-tpl": "node ./template/execute.js",
         "build": "npm run build:npm && npm run build:cdn && npm run modify-version && node ./helper/copy-git-code.js",
-        "build:gitcode": "cd easy-dom && npm run build"
+        "build:gitcode": "cd easy-dom && npm run build",
+        "build:all": "npm run build && npm run build:gitcode"
     },
     "author": "theajack",
     "repository": {

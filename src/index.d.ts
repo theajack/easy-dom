@@ -8,7 +8,8 @@ export class Ele {
     hasAttr(a:string): boolean;
     rmAttr(a:string): Ele;
     style(a:string|object, b?: string): Ele|string;
-    text(text?: string): Ele|string;
+    text(): string;
+    text(text: string): Ele;
     value(value?: string): Ele|string;
     html(html?: string): Ele|string;
     cls(cls?: string): Ele|string;
@@ -23,10 +24,10 @@ export class Ele {
             method: object
         }, opt: object) => {}
     }): Ele;
-    addClass(cls: string): Ele;
-    rmClass(cls: string): Ele;
-    hasClass(cls: string): boolean;
-    replaceClass(ca: string, cb:string): Ele;
+    addClass(cls: string, withPrefix?: boolean): Ele;
+    rmClass(cls: string, withPrefix?: boolean): Ele;
+    hasClass(cls: string, withPrefix?: boolean): boolean;
+    replaceClass(ca: string, cb:string, withPrefix?: boolean): Ele;
     append(...args: Array<HTMLElement|Ele|Array<HTMLElement|Ele>>):  Ele;
     insert(index: number, ...args: Array<HTMLElement|Ele|Array<HTMLElement|Ele>>): Ele;
     prepend(...args: Array<HTMLElement|Ele|Array<HTMLElement|Ele>>): Ele;
@@ -36,14 +37,18 @@ export class Ele {
     empty(): Ele;
     data(name?: string|object|null, value?: any): any;
     parent(index?: number): Ele|null;
-    child(index?: number): Ele|Array<Ele>|null;
+    child(index?: number|string): Ele|Array<Ele>|null;
     brother(index?: number): Ele|Array<Ele>|null;
     index(): number;
     next(index?: number): Ele|null;
     prev(index?: number): Ele|null;
-    exe(callback: (el: HTMLElement)=>{}): Ele;
+    created(this: Ele, callback: (el: Ele)=>{}): Ele;
+    mounted(this: Ele, callback: (el: Ele, parent: Ele)=>{}): Ele;
     src(src: string): Ele;
-    query(selector: string): Array<Ele>;
+    query(selector: string, one?: boolean): Ele|null|Array<Ele>;
+    name(name?:string): Ele|string; 
+    hide():Ele;
+    show(display?: string):Ele;
 }
 
 declare interface PCBuildTouchEvent {

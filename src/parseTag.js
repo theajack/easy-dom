@@ -9,7 +9,7 @@ export default function parseTag (tag) {
         res.id = cut(tag.match(/(#)(\S*?)(\.|\[|$)/g)[0]);
     }
     if (tag.indexOf('.') !== -1) {
-        res.cls = cut(tag.match(/(\.)(\S*?)(#|\[|$)/g)[0]).split('.').join(' ');
+        res.cls = cut(tag.match(/(\.)(\S*?)(#|\[|$)/g)[0]).split('.').join(' ').trim();
     }
     if (tag.indexOf('[') !== -1) {
         res.attr = {};

@@ -48,6 +48,12 @@ function clearClassPrefix() {
 }
 
 function checkPrefix(cls) {
+  var withPrefix = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
+  if (!withPrefix) {
+    return cls;
+  }
+
   return class_prefix + cls;
 }
 
@@ -63,7 +69,7 @@ function () {
     if (ele) {
       this.el = ele;
     } else {
-      var res = (0, _parseTag["default"])(tag);
+      var res = (0, _parseTag["default"])(tag, class_prefix);
       this.el = document.createElement(res.tag);
 
       if (res.cls) {
@@ -237,7 +243,8 @@ function () {
   }, {
     key: "addClass",
     value: function addClass(cls) {
-      cls = checkPrefix(cls);
+      var withPrefix = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+      cls = checkPrefix(cls, withPrefix);
 
       if (!this.hasClass(cls)) {
         if (this.el.className === '') {
@@ -252,13 +259,15 @@ function () {
   }, {
     key: "hasClass",
     value: function hasClass(cls) {
-      cls = checkPrefix(cls);
+      var withPrefix = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+      cls = checkPrefix(cls, withPrefix);
       return getRegExp(cls).test(this.el.className);
     }
   }, {
     key: "rmClass",
     value: function rmClass(cls) {
-      cls = checkPrefix(cls);
+      var withPrefix = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+      cls = checkPrefix(cls, withPrefix);
 
       if (this.hasClass(cls)) {
         this.el.className = this.el.className.replace(getRegExp(cls), ' ').trim();
@@ -269,8 +278,9 @@ function () {
   }, {
     key: "replaceClass",
     value: function replaceClass(a, b) {
-      a = checkPrefix(a);
-      b = checkPrefix(b);
+      var withPrefix = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+      a = checkPrefix(a, withPrefix);
+      b = checkPrefix(b, withPrefix);
 
       if (this.hasClass(a)) {
         this.el.className = this.el.className.replace(getRegExp(a), ' ' + b + ' ').trim();
@@ -299,9 +309,30 @@ function () {
       }
 
       eles.forEach(function (el) {
-        _this2.el.appendChild(checkDom(el));
+        if (!el) {
+          return;
+        }
+
+        var dom = checkDom(el);
+
+        _this2.el.appendChild(dom);
+
+        if (typeof dom.__ed_mounted === 'function') {
+          setTimeout(function () {
+            var El = _query(dom);
+
+            dom.__ed_mounted.call(El, El, _this2);
+
+            dom.__ed_mounted = null;
+          });
+        }
       });
       return this;
+    }
+  }, {
+    key: "name",
+    value: function name(_name) {
+      return this.attr('el-name', _name);
     }
   }, {
     key: "insert",
@@ -483,6 +514,10 @@ function () {
         });
       }
 
+      if (typeof i === 'string') {
+        return this.query("[el-name=\"".concat(i, "\"]"), true);
+      }
+
       return Array.prototype.slice.apply(this.el.children).map(function (dom) {
         return new Ele({
           ele: dom
@@ -499,9 +534,16 @@ function () {
       return this.parent().child();
     }
   }, {
-    key: "exe",
-    value: function exe(cb) {
-      cb.call(this, this.dom());
+    key: "created",
+    value: function created(cb) {
+      cb.call(this, this);
+      return this;
+    } // 被其他元素append
+
+  }, {
+    key: "mounted",
+    value: function mounted(fn) {
+      this.el.__ed_mounted = fn;
       return this;
     }
   }, {
@@ -519,6 +561,18 @@ function () {
   }, {
     key: "query",
     value: function query(selector) {
+      var one = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+      if (one) {
+        var el = this.el.querySelector(selector);
+
+        if (el) {
+          return _query(el);
+        }
+
+        return null;
+      }
+
       var list = this.el.querySelectorAll(selector);
       var res = [];
 
@@ -527,6 +581,17 @@ function () {
       }
 
       return res;
+    }
+  }, {
+    key: "hide",
+    value: function hide() {
+      return this.style('display', 'none');
+    }
+  }, {
+    key: "show",
+    value: function show() {
+      var display = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'block';
+      return this.style('display', display);
     }
   }]);
 
