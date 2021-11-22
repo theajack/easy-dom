@@ -1,7 +1,7 @@
 /* 添加style样式*/
 import $ from '.';
 
-let commonStyle = {
+const commonStyle = {
 
 };
 
@@ -9,7 +9,7 @@ let stylePool = {};
 
 export function addCommonStyle (name, value) {
     if (typeof name === 'object') {
-        for (let k in name) {
+        for (const k in name) {
             addCommonStyle(k, name[k]);
         }
         return;
@@ -18,12 +18,12 @@ export function addCommonStyle (name, value) {
     if (typeof commonStyle[name] === 'undefined') {
         commonStyle[name] = value;
     } else {
-        console.warn('addCommonStyle 存在重名变量：' + name);
+        console.warn(`addCommonStyle 存在重名变量：${name}`);
     }
 }
 
 export function initStylePool () {
-    for (let id in stylePool) {
+    for (const id in stylePool) {
         reportStyle({
             func: stylePool[id],
             id
@@ -41,7 +41,7 @@ export function reportStyle ({
         return;
     }
     if (pool) {
-        let css = func(commonStyle);
+        const css = func(commonStyle);
         func.hasReport = true;
         if (stylePool[id]) {
             stylePool[id] += css;
@@ -58,7 +58,7 @@ export function reportStyle ({
         css = func(commonStyle);
     }
     css = zipCss(css);
-    let styleEl = $.query('#' + id);
+    let styleEl = $.query(`#${id}`);
     if (!styleEl) {
         styleEl = $.create('style').id(id);
         $.query(document.head).append(styleEl);
@@ -67,5 +67,7 @@ export function reportStyle ({
 }
 
 function zipCss (css) {
-    return css.replace(new RegExp('\\n *', 'g'), '').replace(new RegExp(' *\\{', 'g'), '{').replace(new RegExp('\\/\\*(.|\\n)*?\\*\\/', 'g'), '').trim();
+    return css.replace(new RegExp('\\n *', 'g'), '').replace(new RegExp(' *\\{', 'g'), '{')
+        .replace(new RegExp('\\/\\*(.|\\n)*?\\*\\/', 'g'), '')
+        .trim();
 }

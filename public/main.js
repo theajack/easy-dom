@@ -1,6 +1,4 @@
-import $ from '../src';
-// import $ from '../npm';
-// import $ from '../tnpm/repository';
 // import $ from '../src';
+import $ from '../npm/easydom.min.js';
 window.ed = $;
 console.log($);

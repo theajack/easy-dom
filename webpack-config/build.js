@@ -1,66 +1,25 @@
-// let version = require('../helper/version.json').version;
-
 const path = require('path');
-let pkg = require('../package.json');
-let config = require('../ebuild.config');
+require('../helper/copy-to-npm');
+require('../helper/copy-version');
 
-// if config.name not exist, use package name
-let name = ((name) => {
-    let res = '';
-    for (var i = 0; i < name.length; i++) {
-        if (name[i] === '-') {
-            if (i < name.length - 1) {
-                i++;
-                res += name[i].toUpperCase();
-            }
-        } else {
-            res += name[i];
-        }
+module.exports = {
+    mode: 'production',
+    entry: path.resolve('./', 'src/index.js'),
+    output: {
+        path: path.resolve('./', 'npm'),
+        filename: 'easydom.min.js',
+        library: 'EasyDom',
+        libraryTarget: 'umd',
+        // umdNamedDefine: true, // 这个地方暂时有问题 打包出来的时 {default: DisableDevtool} 临时解决是直接修改打包后的文件
+        globalObject: 'this',
+        libraryExport: 'default',
+    },
+    module: {
+        rules: [{
+            test: /(.js)$/,
+            use: [{
+                loader: 'babel-loader',
+            }]
+        }]
     }
-    return res;
-})(pkg.name);
-
-let libraryName = config.libraryName || name;
-let cdnFileName = config.cdnFileName || name;
-
-let version = config.version;
-
-let index = 'src/index.js';
-
-module.exports = (env) => {
-    let npm = env.mode === 'npm';
-    return {
-        mode: 'production',
-        entry: path.resolve('./', index),
-        output: {
-            path: path.resolve('./', npm ? 'npm' : 'cdn'),
-            filename: npm ? 'index.js' : (cdnFileName + '.' + version + '.min.js'),
-            library: libraryName,
-            libraryTarget: 'umd',
-            libraryExport: 'default',
-        },
-        externals: npm ? config.npmExternals : {},
-        module: {
-            rules: [
-                {
-                    test: /(.js)$/,
-                    use: [{
-                        loader: 'babel-loader',
-                    }]
-                }, {
-                    enforce: 'pre',
-                    test: /\.vue$/,
-                    loader: 'eslint-loader',
-                    exclude: /node_modules/
-                // }, {
-                //     test: /(.js)$/,
-                //     use: [{
-                //         loader: path.resolve('./', 'helper/zipcssinjs-loader.js')
-                //     }],
-                //     exclude: /node_modules/,
-                //     include: /(tacl-ui)|(easy-dom)/
-                }
-            ]
-        }
-    };
 };

@@ -1,32 +1,13 @@
+import {checkPrefix, getClassPrefix} from './class-prefix';
 import parseTag from './parseTag';
 import {render} from './render';
-
-let class_prefix = '';
-export function classPrefix (pf, func) {
-    class_prefix = pf;
-    if (typeof func === 'function') {
-        func(clearClassPrefix);
-        clearClassPrefix();
-    }
-}
-export function clearClassPrefix () {
-    class_prefix = '';
-}
-
-function checkPrefix (cls, withPrefix = true) {
-    if(!withPrefix){
-        return cls;
-    }
-    return class_prefix + cls;
-}
-
 
 export class Ele {
     constructor ({tag, ele}) {
         if (ele) {
             this.el = ele;
         } else {
-            let res = parseTag(tag, class_prefix);
+            const res = parseTag(tag, getClassPrefix());
             this.el = document.createElement(res.tag);
             if (res.cls) {this.cls(res.cls);}
             if (res.attr) {this.attr(res.attr);}
@@ -37,14 +18,13 @@ export class Ele {
         return this.el;
     }
 
-    cls (cls) {
+    cls (cls, withPrefix = true) {
         if (typeof cls === 'undefined') {
             return this.el.className;
         }
-        if (class_prefix !== '') {
-            this.el.className = cls.split(' ').map((item) => {
-                return checkPrefix(item);
-            }).join(' ');
+        if (withPrefix && getClassPrefix() !== '') {
+            this.el.className = cls.split(' ').map(item => checkPrefix(item))
+                .join(' ');
         } else {
             this.el.className = cls;
         }
@@ -60,7 +40,7 @@ export class Ele {
 
     attr (name, value) {
         if (typeof name === 'object') {
-            for (let k in name) {
+            for (const k in name) {
                 this.el.setAttribute(k, name[k]);
             }
             return this;
@@ -88,43 +68,47 @@ export class Ele {
     style (name, value) {
         if (typeof value === 'undefined') {
             if (name instanceof Array) { // 根据数组批量获取样式
-                let style = {};
+                const style = {};
                 name.forEach((item) => {
                     style[item] = this.style(item);
                 });
                 return style;
-            } else if (typeof name === 'object') { // 根据json设置样式
-                for (let key in name) {
+            } if (typeof name === 'object') { // 根据json设置样式
+                for (const key in name) {
                     this.style(key, name[key]);
                 }
                 return this;
-            } else {
-                return getComputedStyle(this.el)[name]; // 返回查询到的样式
             }
-        } else { // 根据name value 设置样式
-            if (typeof value === 'string' && value.indexOf('!important') !== -1) {
-                this.el.style.setProperty(name, checkCssValue(this.el, name, value.substring(0, value.indexOf('!important'))), 'important');
-            } else {
-                this.el.style.setProperty(name, checkCssValue(this.el, name, value));
-            }
-            return this;
+            return getComputedStyle(this.el)[name]; // 返回查询到的样式
+        }  // 根据name value 设置样式
+        if (typeof value === 'string' && value.indexOf('!important') !== -1) {
+            this.el.style.setProperty(name, checkCssValue(this.el, name, value.substring(0, value.indexOf('!important'))), 'important');
+        } else {
+            this.el.style.setProperty(name, checkCssValue(this.el, name, value));
         }
+        return this;
     }
 
     text (text) {
-        if (typeof text === 'undefined') {return this.el.innerText;}
+        if (typeof text === 'undefined') {
+            return this.el.innerText;
+        }
         this.el.innerText = text;
         return this;
     }
 
     value (val) {
-        if (typeof val === 'undefined') {return this.el.value;}
+        if (typeof val === 'undefined') {
+            return this.el.value;
+        }
         this.el.value = val;
         return this;
     }
 
     html (html) {
-        if (typeof html === 'undefined') {return this.el.innerHTML;}
+        if (typeof html === 'undefined') {
+            return this.el.innerHTML;
+        }
         this.el.innerHTML = html;
         return this;
     }
@@ -135,7 +119,7 @@ export class Ele {
 
     on (name, func, useCapture = false) {
         if (typeof name === 'object') {
-            for (let k in name) {
+            for (const k in name) {
                 this.on(k, name[k]);
             }
             return this;
@@ -153,7 +137,7 @@ export class Ele {
             if (this.el.className === '') {
                 this.el.className = cls;
             } else {
-                this.el.className += ' ' + cls;
+                this.el.className += ` ${cls}`;
             }
         }
         return this;
@@ -175,7 +159,7 @@ export class Ele {
         a = checkPrefix(a, withPrefix);
         b = checkPrefix(b, withPrefix);
         if (this.hasClass(a)) {
-            this.el.className = this.el.className.replace(getRegExp(a), ' ' + b + ' ').trim();
+            this.el.className = this.el.className.replace(getRegExp(a), ` ${b} `).trim();
         } else {
             this.addClass(b);
         }
@@ -186,34 +170,51 @@ export class Ele {
     }
 
     append (...eles) {
-        if (eles[0] instanceof Array) {
-            eles = eles[0];
-        }
         eles.forEach((el) => {
-            if(!el){return;}
-            let dom = checkDom(el);
-            this.el.appendChild(dom);
-            if(typeof dom.__ed_mounted === 'function'){
-                setTimeout(()=>{
-                    let El = query(dom)
-                    dom.__ed_mounted.call(El, El, this);
-                    dom.__ed_mounted = null
-                })
+            if (el instanceof Array) {
+                el.forEach((singleEl) => {
+                    this.appendSingle(singleEl);
+                });
+            } else {
+                this.appendSingle(el);
             }
         });
         return this;
     }
 
-    name (name){
+    appendSingle (el) {
+        if (el === null) {
+            return this;
+        }
+        const dom = checkDom(el);
+        try {
+            this.el.appendChild(dom);
+        } catch (e) {
+            console.warn(e);
+            return this;
+        }
+        if (typeof dom.__ed_mounted === 'function') {
+            setTimeout(() => {
+                if (typeof dom.__ed_mounted === 'function') {
+                    const El = query(dom);
+                    dom.__ed_mounted.call(El, El, this);
+                }
+                dom.__ed_mounted = null;
+            });
+        }
+        return this;
+    }
+
+    name (name) {
         return this.attr('el-name', name);
     }
 
     insert (...eles) {
-        let index = eles.shift();
+        const index = eles.shift();
         if (eles[0] instanceof Array) {
             eles = eles[0];
         }
-        let el = this.child(index);
+        const el = this.child(index);
         if (el) {
             eles.forEach((ele) => {
                 this.el.insertBefore(checkDom(ele), el.el);
@@ -254,7 +255,9 @@ export class Ele {
 
     parent (index) {
         if (typeof index === 'number') {
-            if (index < 1) {return null;};
+            if (index < 1) {
+                return null;
+            };
             let parent = this;
             for (let i = 0; i < index; i++) {
                 parent = parent.parent();
@@ -263,23 +266,26 @@ export class Ele {
                 }
             }
             return parent;
-        } else {
-            if (this.el.parentElement) {
-                return new Ele({ele: this.el.parentElement});
-            }
-            return null;
         }
+        if (this.el.parentElement) {
+            return new Ele({ele: this.el.parentElement});
+        }
+        return null;
     }
 
     data (name, value) {
-        if (typeof this.el._ed_data === 'undefined') {this.el._ed_data = {};}
+        if (typeof this.el._ed_data === 'undefined') {
+            this.el._ed_data = {};
+        }
         let data = this.el._ed_data;
-        if (typeof name === 'undefined') {return data;}
+        if (typeof name === 'undefined') {
+            return data;
+        }
         if (typeof name === 'object') {
             if (name === null) {
                 data = {};
             } else {
-                for (let k in name) {
+                for (const k in name) {
                     this.data(k, name[k]);
                 }
             }
@@ -296,9 +302,9 @@ export class Ele {
     }
 
     index () {
-        var a = this.parent().child();
-        for (var i = 0; i < a.length; i++) {
-            if (a[i].el == this.el) {
+        const a = this.parent().child();
+        for (let i = 0; i < a.length; i++) {
+            if (a[i].el === this.el) {
                 return i;
             }
         }
@@ -318,12 +324,10 @@ export class Ele {
             }
             return new Ele({ele: this.el.children[i]});
         }
-        if(typeof i === 'string'){
+        if (typeof i === 'string') {
             return this.query(`[el-name="${i}"]`, true);
         }
-        return Array.prototype.slice.apply(this.el.children).map((dom) => {
-            return new Ele({ele: dom});
-        });
+        return Array.prototype.slice.apply(this.el.children).map(dom => new Ele({ele: dom}));
     }
     brother (i) {
         if (typeof i === 'number') {
@@ -337,7 +341,7 @@ export class Ele {
         return this;
     }
     // 被其他元素append
-    mounted(fn){
+    mounted (fn) {
         this.el.__ed_mounted = fn;
         return this;
     }
@@ -352,39 +356,42 @@ export class Ele {
     }
 
     query (selector, one = false) {
-        if(one){
-            let el = this.el.querySelector(selector);
-            if(el){
+        if (one) {
+            const el = this.el.querySelector(selector);
+            if (el) {
                 return query(el);
             }
             return null;
         }
-        let list = this.el.querySelectorAll(selector);
-        let res = [];
+        const list = this.el.querySelectorAll(selector);
+        const res = [];
         for (let i = 0; i < list.length; i++) {
             res.push(query(list[i]));
         }
         return res;
     }
-    hide(){
+    hide () {
         return this.style('display', 'none');
     }
-    show(display = 'block'){
+    show (display = 'block') {
         return this.style('display', display);
+    }
+    setVisible (visible = true, display = 'block') {
+        return visible ? this.show(display) : this.hide();
     }
 }
 
 
 function getRegExp (name) {
-    return new RegExp('(^| )' + name + '($| )');
+    return new RegExp(`(^| )${name}($| )`);
 }
 function checkCssValue (a, c, d) {
     if (typeof d === 'string' && (d.indexOf('-=') !== -1 || d.indexOf('+=') !== -1)) {
-        var e = getCssNumberValue(d.substring(d.indexOf('=') + 1));
+        const e = getCssNumberValue(d.substring(d.indexOf('=') + 1));
         if (d.indexOf('-=') !== -1) {
             e[0] = -e[0];
         }
-        var b;
+        let b;
         if (d.indexOf('%') !== -1) {
             b = getCssNumberValue(a.style[c]);
         } else {
@@ -395,10 +402,10 @@ function checkCssValue (a, c, d) {
     return d;
 };
 function getCssNumberValue (a, b) {
-    if (a == '' || a == undefined) {
+    if (a === '' || a === undefined) {
         a = '0%';
     }
-    if (b == undefined) {
+    if (b === undefined) {
         if (a.has('px')) {
             b = 'px';
         } else if (a.has('%')) {
@@ -416,11 +423,10 @@ function getCssNumberValue (a, b) {
 export function checkDom (el) {
     if (el instanceof HTMLElement) {
         return el;
-    } else if (typeof el === 'string') {
+    } if (typeof el === 'string') {
         return document.querySelector(el);
-    } else {
-        return el.el;
     }
+    return el.el;
 }
 
 export function query (selector, all) {
@@ -433,7 +439,7 @@ export function query (selector, all) {
     if (all === true) {
         return document.querySelectorAll(selector);
     }
-    let ele = document.querySelector(selector);
+    const ele = document.querySelector(selector);
     if (!ele) {
         return null;
     }

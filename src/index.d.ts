@@ -1,5 +1,3 @@
-
-
 export class Ele {
     constructor(parameters: {tag: string, ele: HTMLElement});
     el: HTMLElement;
@@ -12,7 +10,7 @@ export class Ele {
     text(text: string): Ele;
     value(value?: string): Ele|string;
     html(html?: string): Ele|string;
-    cls(cls?: string): Ele|string;
+    cls(cls?: string, withPrefix?: boolean): Ele|string;
     id(id?: string): Ele|string;
     click(func: (event: Event)=>{}, useCapture?: boolean): Ele;
     on(a:string|object, b?:Function, useCapture?: boolean): Ele;
@@ -29,6 +27,7 @@ export class Ele {
     hasClass(cls: string, withPrefix?: boolean): boolean;
     replaceClass(ca: string, cb:string, withPrefix?: boolean): Ele;
     append(...args: Array<HTMLElement|Ele|Array<HTMLElement|Ele>>):  Ele;
+    appendSingle(el: HTMLElement|Ele): Ele;
     insert(index: number, ...args: Array<HTMLElement|Ele|Array<HTMLElement|Ele>>): Ele;
     prepend(...args: Array<HTMLElement|Ele|Array<HTMLElement|Ele>>): Ele;
     before(...args: Array<HTMLElement|Ele|Array<HTMLElement|Ele>>): Ele;
@@ -49,6 +48,7 @@ export class Ele {
     name(name?:string): Ele|string; 
     hide():Ele;
     show(display?: string):Ele;
+    setVisible(visible?: boolean, display?: string): Ele;
 }
 
 declare interface PCBuildTouchEvent {
@@ -84,6 +84,7 @@ export interface ToolStatic {
     windowSize(useInner?: boolean): {width: number, height: number};
     isMobile(): false | string;
     version: string;
+    setWindowSize(size: {width: number, height: number}): void;
 }
 
 declare const Tool: ToolStatic;

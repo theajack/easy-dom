@@ -1,25 +1,22 @@
 {
-    "name": "easy-dom",
-    "version": "0.0.27",
-    "description": "原生操作dom元素的简易封装",
+    "name": "easy-dom-util",
+    "version": "0.0.29",
+    "description": "原生操作dom元素的封装",
+    "main": "easydom.min.js",
+    "unpkg": "easydom.min.js",
+    "jsdelivr": "easydom.min.js",
+    "typings": "index.d.ts",
     "scripts": {
-        "build:cdn": "webpack --config webpack-config/build.js --env.mode=script && npm run copy-latest",
-        "build:npm": "npm run render-tpl && npm run copy-npm",
-        "publish": "npm publish npm",
         "dev": "webpack-dev-server --open --config webpack-config/dev.js",
-        "lint": "eslint src --ext js",
-        "copy-latest": "node ./helper/copy-latest.js",
-        "modify-version": "node ./helper/modify-version.js",
-        "copy-npm": "node ./helper/copy-npm.js",
-        "render-tpl": "node ./template/execute.js",
-        "build": "npm run build:npm && npm run build:cdn && npm run modify-version && node ./helper/copy-git-code.js",
-        "build:gitcode": "cd easy-dom && npm run build",
-        "build:all": "npm run build && npm run build:gitcode"
+        "start": "npm run dev",
+        "build": "webpack --config webpack-config/build.js",
+        "publish": "npm publish npm",
+        "lint": "eslint src --ext js"
     },
     "author": "theajack",
     "repository": {
         "type": "git",
-        "url": "https://github.com/theajack/ebuild-cli"
+        "url": "https://github.com/theajack/easy-dom"
     },
     "keywords": [
         "easy-dom"

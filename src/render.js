@@ -6,11 +6,11 @@ export function render ({
     result = null
 }) {
     this.html(zipHtml(html));
-    let el = {};
+    const el = {};
     if (typeof result === 'function') {
-        let els = this.query('[\\@el]');
+        const els = this.query('[\\@el]');
         for (let i = 0; i < els.length; i++) {
-            let item = els[i];
+            const item = els[i];
             el[item.attr('@el')] = item;
             item.attr('@el', null);
         }
@@ -19,10 +19,10 @@ export function render ({
             method,
         }, el);
     }
-    let list = this.query('[\\@event]');
+    const list = this.query('[\\@event]');
     for (let i = 0; i < list.length; i++) {
-        let item = list[i];
-        let res = buildEventResult(item);
+        const item = list[i];
+        const res = buildEventResult(item);
         if (method[res.name]) {
             item.on(res.event, method[res.name].bind({
                 el: this,
@@ -37,7 +37,7 @@ export function render ({
 }
 
 function buildEventResult (item) {
-    let arr = item.attr('@event').split(':');
+    const arr = item.attr('@event').split(':');
     item.attr('@event', null);
     let event = 'click', name, args = [];
     if (arr.length === 1) {
@@ -47,14 +47,13 @@ function buildEventResult (item) {
         name = arr[1];
     }
     if (name.indexOf('(') !== -1) {
-        let arg = name.match(/\(.*\)/);
+        const arg = name.match(/\(.*\)/);
         if (arg !== null) {
             let str = arg[0].replace(/'/g, '"');
             str = `[${str.substr(1, str.length - 2)}]`;
             args = JSON.parse(str);
         }
         name = name.substr(0, name.indexOf('('));
-
     }
     return {
         event,
@@ -64,5 +63,6 @@ function buildEventResult (item) {
 }
 
 function zipHtml (html) {
-    return html.replace(new RegExp('\\n *', 'g'), '').replace(new RegExp('<!--(.|\\n)*?-->', 'g'), '').trim();
+    return html.replace(new RegExp('\\n *', 'g'), '').replace(new RegExp('<!--(.|\\n)*?-->', 'g'), '')
+        .trim();
 }

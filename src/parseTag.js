@@ -3,21 +3,22 @@ export default function parseTag (tag) {
     if (tag.match(/[#\.\[]/) === null) {
         return {tag};
     }
-    let res = {};
+    const res = {};
     res.tag = cut(tag.match(/^(\S*?)(#|\.|\[)/g)[0], 0);
     if (tag.indexOf('#') !== -1) {
         res.id = cut(tag.match(/(#)(\S*?)(\.|\[|$)/g)[0]);
     }
     if (tag.indexOf('.') !== -1) {
-        res.cls = cut(tag.match(/(\.)(\S*?)(#|\[|$)/g)[0]).split('.').join(' ').trim();
+        res.cls = cut(tag.match(/(\.)(\S*?)(#|\[|$)/g)[0]).split('.')
+            .join(' ')
+            .trim();
     }
     if (tag.indexOf('[') !== -1) {
         res.attr = {};
-        tag.match(/(\[)(\S*?)(\])/g).map((item) => {
-            return cut(item).split('=');
-        }).forEach(item => {
-            res.attr[item[0]] = item[1] || '';
-        });
+        tag.match(/(\[)(\S*?)(\])/g).map(item => cut(item).split('='))
+            .forEach((item) => {
+                res.attr[item[0]] = item[1] || '';
+            });
     }
     return res;
 }

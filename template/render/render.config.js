@@ -1,7 +1,6 @@
-const tnpm = true;
+
 
 let target = ['npm'];
-if (tnpm) target.push('tnpm');
 
 module.exports = {
     target,

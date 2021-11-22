@@ -1,6 +1,6 @@
 import $ from './index';
 
-let df = function () {};
+const df = function () {};
 
 export function registTouchEvent ({
     el,
@@ -10,9 +10,9 @@ export function registTouchEvent ({
 }) {
     if (isMobile()) {
         $.query(el).on({
-            'touchstart': touchStart,
-            'touchmove': touchMove,
-            'touchend': touchEnd
+            touchstart: touchStart,
+            touchmove: touchMove,
+            touchend: touchEnd
         });
         // document.body.addEventListener(
         //     'touchmove',
@@ -24,19 +24,19 @@ export function registTouchEvent ({
     } else {
         let isMouseDown = false;
         $.query(el).on({
-            'mousedown': (e) => {
+            mousedown: (e) => {
                 isMouseDown = true;
                 touchStart(buildTouchWithMouse(e, 'touchstart'));
             }
         });
         $.query(document.body).on({
-            'mousemove': (e) => {
+            mousemove: (e) => {
                 e.preventDefault(); // 阻止默认的处理方式(防止拖拽选中效果)
                 if (isMouseDown) {
                     touchMove(buildTouchWithMouse(e, 'touchmove'));
                 }
             },
-            'mouseup': (e) => {
+            mouseup: (e) => {
                 if (isMouseDown) {
                     isMouseDown = false;
                     touchEnd(buildTouchWithMouse(e, 'touchend'));
@@ -52,7 +52,7 @@ function isMobile () {
 }
 
 function buildTouchWithMouse (event, type) {
-    let es = [{
+    const es = [{
         clientX: event.clientX,
         clientY: event.clientY,
         force: 1,

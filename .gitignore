@@ -1,5 +1,4 @@
 /node_modules
-/template/config/tnpm.js
 /helper/copy-git-code.js
 /easy-dom
 readme.gitcode.txt

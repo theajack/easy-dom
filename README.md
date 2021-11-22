@@ -1,82 +1,94 @@
 # [easy-dom](https://github.com/theajack/easy-dom)
 
-## Easy-Dom 便捷操作dom的js库
+## Easy-Dom js library for convenient operation of dom
+
+----
+
+[中文](https://github.com/theajack/easy-dom/blob/master/README.cn.md) | [Version Log](https://github.com/theajack/easy-dom/blob/master/helper/version.md)
+
 
 [TOC]
 
-### 0. 安装使用
+### 0. Installation and use
 
-#### 0.1 npm 方式安装
+#### 0.1 npm installation
 
 ```
 npm i easy-dom-util
 ```
 
-使用
+use
 
 ```js
-import $ from 'easy-dom-util';
+import $ from'easy-dom-util';
 
-let el = $.create('div'); // 返回一个 Ele 类型的元素，封装了dom操作的方法
+let el = $.create('div'); // returns an element of type Ele, which encapsulates the method of dom operation
 ...
 ```
 
-#### 0.2 script 标签引入
+#### 0.2 script tag introduction
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/theajack/easy-dom/cdn/easydom.latest.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/easy-dom-util/easydom.min.js"></script>
+<!-- or -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/easy-dom-util@x.x.x/easydom.min.js"></script> -->
 <script>
     var el = EasyDom.create('div');
 </script>
 ```
 
-### 1. Ele 对象
+### 1. Ele object
 
-easy-dom 对 dom 元素进行了一层封装，每个dom元素会被封装成一个 Ele 元素
+easy-dom encapsulates the dom element, and each dom element will be encapsulated into an Ele element
 
-Ele 元素上面的方法大都支持链式调用，Ele元素有以下方法可供使用：
+Most of the methods on the Ele element support chained calls. The Ele element has the following methods for use:
 
-方法列表，详细使用在下面：
+A list of methods, used in detail below:
 
-| 方法 | 参数 | 返回值 | 说明 |
+| Method | Parameters | Return Value | Description |
 | :--: | :--: | :--: | :--: |
-| dom | -- | HTMLElement | 返回对应的原生dom元素 |
-| attr | json/name,value/-- | Ele/string/Ele | 设置或获取元素属性 |
-| data | json/name/null/--,value/null/-- | any | 对dom元素暂存和操作一些数据 |
-| hasAttr | string | boolean | 判断是否有某属性 |
-| rmAttr | string | Ele/string/Ele | 删除属性 |
-| style | json/name,value | Ele/string/Ele | 设置或获取元素样式 |
-| text | [string] | string/Ele | 设置或获取元素innerText |
-| value | [string] | string/Ele | 设置或获取元素value |
-| html | [string] | string/Ele | 设置或获取元素innerHTML |
-| empty | -- | Ele | 清空元素内容 |
-| cls | [string] | string/Ele | 给元素设置类或者获取元素的类名 |
-| id | [string] | string/Ele | 给元素设置id或者获取元素的id |
-| click | function | Ele | 设置元素 click 事件 |
-| on | json/name,func | Ele | 设置元素的事件 |
-| render | {html,method={},result=null} | Ele | 渲染元素 |
-| addClass | string | Ele | 给元素添加类 |
-| rmClass | string | Ele | 移除某个类 |
-| hasClass | string | boolean | 判断是否有某个类 |
-| replaceClass | string,string | Ele | 替换类 |
-| append | ...Array[dom/Ele] / Array[dom/Ele] | Ele | 给元素插入孩子节点 |
-| insert | index, ...Array[dom/Ele] / Array[dom/Ele] | Ele | 指定位置插入孩子 |
-| prepend | ...Array[dom/Ele] / Array[dom/Ele] | Ele | 头部插入孩子 |
-| before | ...Array[dom/Ele] / Array[dom/Ele] | Ele | 在元素前面插入同级元素 |
-| after | ...Array[dom/Ele] / Array[dom/Ele] | Ele | 在元素后面插入同级元素 |
-| remove | int/Ele/-- | Ele/-- | 根据位置或者ele元素删除孩子节点，或删除自身 |
-| parent | [index] | Ele/null | 获取元素的父元素或第n级父元素 |
-| index | -- | number | 获取元素在父元素中的位置 |
-| child | [index] | Ele/Array[Ele]/null | 获取第几个或全部子元素 |
-| next | [index] | Ele/null| 获取元素的前一个或前第n个元素 |
-| prev | [index] | Ele/null | 获取元素的后一个或后第n个元素 |
-| exe | function(dom){} | Ele | 以Ele为this执行一个方法，回调参数为对应的dom元素 |
-| src | string | Ele | 设置dom的src属性 |
-| query | selector | Array[Ele] | 根据css选择器查询元素的所有孩子 |
+| dom | - | HTMLElement | Return the corresponding native dom element |
+| attr | json/name,value/-- | Ele/string/Ele | Set or get element attributes |
+| data | json/name/null/--,value/null/-- | any | Temporarily store and manipulate some data on dom elements |
+| hasAttr | string | boolean | Determine whether there is an attribute |
+| rmAttr | string | Ele/string/Ele | Delete attribute |
+| style | json/name,value | Ele/string/Ele | Set or get element style |
+| text | [string] | string/Ele | Set or get element innerText |
+| value | [string] | string/Ele | Set or get element value |
+| html | [string] | string/Ele | Set or get element innerHTML |
+| empty | - | Ele | Empty element content |
+| cls | [string],[withPrefix=boolean] | string/Ele | Set the class of the element or get the class name of the element |
+| id | [string] | string/Ele | Set the id of the element or get the id of the element |
+| click | function | Ele | Set element click event |
+| on | json/name,func | Ele | Set the event of the element |
+| render | {html,method={},result=null} | Ele | Render element |
+| addClass | string | Ele | Add class to element |
+| rmClass | string | Ele | Remove a class |
+| hasClass | string | boolean | Determine whether there is a class |
+| replaceClass | string,string | Ele | Replacement class |
+| append | ...Array[dom/Ele] / Array[dom/Ele] | Ele | Insert child node to element |
+| appendSingle | dom/Ele | Ele | Insert child node to element |
+| insert | index, ...Array[dom/Ele] / Array[dom/Ele] | Ele | Insert child at specified position |
+| prepend | ...Array[dom/Ele] / Array[dom/Ele] | Ele | Head Insert Child |
+| before | ...Array[dom/Ele] / Array[dom/Ele] | Ele | Insert sibling elements in front of elements |
+| after | ...Array[dom/Ele] / Array[dom/Ele] | Ele | Insert an element of the same level after the element |
+| remove | int/Ele/-- | Ele/-- | Delete child nodes according to position or ele element, or delete itself |
+| parent | [index] | Ele/null | Get the parent element or the nth level parent element of an element |
+| index | - | number | Get the position of the element in the parent element |
+| child | [index] | Ele/Array[Ele]/null | Get how many or all child elements |
+| next | [index] | Ele/null| Get the previous or previous nth element of an element |
+| prev | [index] | Ele/null | Get the next or last nth element of an element |
+| exe | function(dom){} | Ele | Use Ele as this to execute a method, and the callback parameter is the corresponding dom element |
+| src | string | Ele | Set the src attribute of dom |
+| query | selector | Array[Ele] | Query all children of an element based on the css selector |
+| name | string | Ele | Add name to element or query element based on name |
+| hide | - | Ele | hide elements |
+| show | [display] | Ele | Display element |
+| setVisible | [visible],[display] | Ele | Display element |
 
-部分api使用实例：
+Some api usage examples:
 
-基本使用
+Basic use
 
 ```js
 let el = $.create('div')
@@ -87,19 +99,19 @@ let el = $.create('div')
     })
 ```
 
-emmet 风格
+emmet style
 
 ```js
 let el = $.create('div#app.cls1.cls2[attr1=1][attr2]')
 ```
 
-render方法
+render method
 
 ```js
 el.render({
     method:{
         alert(text){
-            // this : {el,bindEl,self,method}
+            // this: {el,bindEl,self,method}
             console.log(this);
             window.alert(text);
         }
@@ -107,107 +119,106 @@ el.render({
     result(el){
         console.log(el.div1,el.div2);
     },
-    // 使用 vscode 中的 es6-string-html 插件会使 下面的html带有语法高亮
-    html:/*html*/` 
+    // Using the es6-string-html plugin in vscode will make the following html with syntax highlighting
+    html:/*html*/`
         <div @el='div1' @event=alert('test')></div>
         <div @el='div2'></div>
     `
 })
 ```
 
-.data() 用法
+.data() usage
 
 ```js
-el.data(); // 获取 data 对象
-el.data(null); // 清空 data 对象
-el.data('name', 'test'); // 设置一个数据 
-el.data('name');  // 获取一个数据
-el.data('name', null);  // 移除一个数据 
-el.data({ // 批量操作
-    name: null, // 移除一个数据 
-    age: 12 // 设置一个数据 
+el.data(); // Get data object
+el.data(null); // Clear the data object
+el.data('name','test'); // set a data
+el.data('name'); // Get a data
+el.data('name', null); // remove a data
+el.data({ // batch operation
+    name: null, // remove a data
+    age: 12 // set a data
 });
 ```
 
-Ele 元素只有一个属性 就是 .el , 获取对应的dom 元素
+The only attribute of the Ele element is .el, get the corresponding dom element
 
-### 2. api 列表
+### 2. api list
 
-api 列表
+api list
 
-| api | 参数 | 返回值 | 说明 |
+| api | Parameters | Return value | Description |
 | :--: | :--: | :--: | :--: |
-| create | string | Ele | 根据tag生成一个Ele元素 |
-| query | selector[,boolean] | Ele/NodeList/null | 查询元素，后面的bool参数表示是否查询全部元素，否则只查询第一个 |
-| checkDom | string/selector/HTMLElement | HTMLElement/NodeList | 获取dom元素 |
-| classPrefix | string[,function] | -- | 给类名添加一个默认前缀，如果带有回调函数作为参数，则在回调完成之后，前缀会被清除，否则请手动调用clearClassPrefix清除 |
-| clearClassPrefix | -- | -- | 清除类名前缀 |
-| addCommonStyle | object/name,value | -- | 添加css变量和公用样式 |
-| reportStyle | {function, id = 'el-style', usePool = false} | -- | 上报css样式 |
-| initStylePool | -- | -- | 初始化样式池 |
-| registTouchEvent | {el[dom/Ele/selector],touchStart,touchMove,touchEnd} | -- | 移动端touch事件封装，兼容pc端 |
-| windowSize | -- | {width:height} | 获取浏览器尺寸 |
-| version | 属性 | -- | easy-dom版本信息 |
+| create | string | Ele | Generate an Ele element based on tag |
+| query | selector[,boolean] | Ele/NodeList/null | Query element, the bool parameter behind indicates whether to query all elements, otherwise only the first one is queried |
+| checkDom | string/selector/HTMLElement | HTMLElement/NodeList | Get dom element |
+| classPrefix | string[,function] | - | Add a default prefix to the class name. If a callback function is used as a parameter, the prefix will be cleared after the callback is completed, otherwise please manually call clearClassPrefix to clear |
+| clearClassPrefix | - | - | Clear class name prefix |
+| addCommonStyle | object/name,value | - | Add css variables and common styles |
+| reportStyle | {function, id ='el-style', usePool = false} | - | Report css style |
+| initStylePool | - | - | Initialize style pool |
+| registTouchEvent | {el[dom/Ele/selector],touchStart,touchMove,touchEnd} | - | Touch event package on mobile terminal, compatible with pc terminal |
+| windowSize | - | {width:height} | Get browser size |
+| version | Attributes | - | easy-dom version information |
 
 
-详细使用
+Detailed use
 
 ```js
 $.classPrefix('el-test-');
 $.create('div').cls('1') // class = el-test-1
 $.clearClassPrefix();
-// 或者
+// or
 $.classPrefix('el-test-',()=>{
     $.create('div').cls('1') // class = el-test-1
 });
 ```
 
-样式相关
+Style related
 
 ```js
 $.addCommonStyle({
     fontSize: '12px',
-    textCenter: 'text-align:center;'
+    textCenter:'text-align:center;'
 })
 
 $.reportStyle({
     func:initStyle,
-    id: 'MyStyle' // style 标签的id 
-}); // 不使用样式池，样式会被马上加入到head中
+    id:'MyStyle' // id of style tag
+}); // Do not use the style pool, the style will be added to the head immediately
 
-// 或者
-
+// or
 $.reportStyle({
-    func:initStyle,
-    id: 'MyStyle', // style 标签的id 
-    usePool: true
-}); // 使用样式池，样式会再调用 initStylePool 之后加入head中，当有很多分散的样式时，建议使用样式池
+     func:initStyle,
+     id:'MyStyle', // id of style tag
+     usePool: true
+}); // Use the style pool, the style will be added to the head after calling initStylePool. When there are many scattered styles, it is recommended to use the style pool
 $.initStylePool();
 
-function initStyle(common){ // common 为公用样式
-    // 使用 vscode 中的 es6-string-css 插件会使 下面的css带有语法高亮
-    return /*css*/`
-        .el-test-1{
-            color:#f44;
-            font-size:${common.fontSize};
-        }
-        .el-test-text{
-            ${common.textCenter}
-            color:#222;
-        }
-    `
+function initStyle(common){ // common is a common style
+     // Using the es6-string-css plugin in vscode will make the following css syntax highlighting
+     return /*css*/`
+         .el-test-1{
+             color:#f44;
+             font-size:${common.fontSize};
+         }
+         .el-test-text{
+             ${common.textCenter}
+             color:#222;
+         }
+     `
 }
 ```
 registTouchEvent
 
 ```js
 $.registTouchEvent({
-    el: 'dom/Ele/selector',
-    touchStart(touchList){
-    },
-    touchMove(touchList){
-    },
-    touchEnd(touchList){
-    },
+     el:'dom/Ele/selector',
+     touchStart(touchList){
+     },
+     touchMove(touchList){
+     },
+     touchEnd(touchList){
+     },
 });
 ```
