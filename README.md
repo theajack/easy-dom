@@ -4,7 +4,7 @@
 
 ----
 
-[中文](https://github.com/theajack/easy-dom/blob/master/README.cn.md) | [Version Log](https://github.com/theajack/easy-dom/blob/master/helper/version.md)
+[中文](https://github.com/theajack/easy-dom/blob/master/README.cn.md) | [Version Log](https://github.com/theajack/easy-dom/blob/master/helper/version.md) | [Online Use](https://theajack.gitee.io/jsbox?theme=dark&lang=html&lib=https://cdn.jsdelivr.net/npm/easy-dom-util/easydom.min.js&code=DwZwxgTglgDgLgAhBMBeARACznGIBcA9IWACYB2AdAFYikCmANlAG4SXn1yHkwC2hegEMQATwC0pAPZ9xAVzhRGgkaOl9KfKFVroAfMELho8PQFgAUMFKsEUUqgDkQmDEcHCNluavHYcHwQghDApchApRnpKRikAcwAKAFFVABEZAEoAbktghBSxdI0ARzl6CFEExwBiFzcMygh6cgYIBIBvXLzgvi5MKVJ8Totu0YQhKIg4BLh6AA84DOGxlZCwiKiY+JnMKBBsrtXugHdtaWPKCfLp2YWDkaOEAF9D7qeAGle8ppA5RmmmEsvmNQuFItFYokmJQAEYKOBhe4rD7AoLYPiMfAIAAGqO6wDhODCCAAAkwMISEeR0KT6CxmnAMFcplUABJMWIIADqUggjFIjgy+gAwswwABrBAAWXohkpYUCY1xDyCTwylkMflMQA)
 
 
 [TOC]
