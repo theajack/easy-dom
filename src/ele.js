@@ -14,7 +14,7 @@ export function clearClassPrefix () {
 }
 
 function checkPrefix (cls, withPrefix = true) {
-    if(!withPrefix){
+    if (!withPrefix) {
         return cls;
     }
     return class_prefix + cls;
@@ -190,21 +190,21 @@ export class Ele {
             eles = eles[0];
         }
         eles.forEach((el) => {
-            if(!el){return;}
+            if (!el) {return;}
             let dom = checkDom(el);
             this.el.appendChild(dom);
-            if(typeof dom.__ed_mounted === 'function'){
-                setTimeout(()=>{
-                    let El = query(dom)
+            if (typeof dom.__ed_mounted === 'function') {
+                setTimeout(() => {
+                    let El = query(dom);
                     dom.__ed_mounted.call(El, El, this);
-                    dom.__ed_mounted = null
-                })
+                    dom.__ed_mounted = null;
+                });
             }
         });
         return this;
     }
 
-    name (name){
+    name (name) {
         return this.attr('el-name', name);
     }
 
@@ -318,7 +318,7 @@ export class Ele {
             }
             return new Ele({ele: this.el.children[i]});
         }
-        if(typeof i === 'string'){
+        if (typeof i === 'string') {
             return this.query(`[el-name="${i}"]`, true);
         }
         return Array.prototype.slice.apply(this.el.children).map((dom) => {
@@ -337,7 +337,7 @@ export class Ele {
         return this;
     }
     // 被其他元素append
-    mounted(fn){
+    mounted (fn) {
         this.el.__ed_mounted = fn;
         return this;
     }
@@ -352,9 +352,9 @@ export class Ele {
     }
 
     query (selector, one = false) {
-        if(one){
+        if (one) {
             let el = this.el.querySelector(selector);
-            if(el){
+            if (el) {
                 return query(el);
             }
             return null;
@@ -366,10 +366,10 @@ export class Ele {
         }
         return res;
     }
-    hide(){
+    hide () {
         return this.style('display', 'none');
     }
-    show(display = 'block'){
+    show (display = 'block') {
         return this.style('display', display);
     }
 }
