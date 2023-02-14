@@ -7,13 +7,13 @@
     "repository": "git@github.com:theajack/ebuild-template-lerna.git",
     "author": "tackchen <theajack@qq.com>",
     "scripts": {
-        "build": "node ../../scripts/build/build.js main"
+        "build": "node ../../scripts/build/build.js easy-dom-util"
     },
     "license": "",
     "type": "module",
     "publishConfig": {
         "registry": "https://registry.npmjs.org/"
     },
-    "unpkg": "dist/demo-main.min.js",
-    "jsdelivr": "dist/demo-main.min.js"
+    "unpkg": "dist/easy-dom-util.min.js",
+    "jsdelivr": "dist/easy-dom-util.min.js"
 }

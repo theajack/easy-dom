@@ -37,7 +37,7 @@ function upcaseFirstLetter (str) {
 }
 
 function buildPackageName (dir) {
-    return `demo-${dir}`;
+    return `${dir}`;
 }
 
 function traverseDir (path, callback) {
@@ -78,7 +78,7 @@ function initSinglePackageInfo (dir, isDev = false, setVesionTs = false) {
     };
     writeJsonIntoFile(package, packagePath);
 
-    if (setVesionTs) writeStringIntoFile(`export default '${package.version}';`, resolvePacakgePath(`${dir}/src/index.ts`));
+    if (setVesionTs) writeStringIntoFile(`export default '${package.version}';`, resolvePacakgePath(`${dir}/src/version.ts`));
 
     fs.copyFileSync(resolveRootPath('README.md'), resolvePacakgePath(`${dir}/README.md`));
     fs.copyFileSync(resolveRootPath('LICENSE'), resolvePacakgePath(`${dir}/LICENSE`));

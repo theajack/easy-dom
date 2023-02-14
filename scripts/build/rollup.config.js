@@ -17,7 +17,6 @@ import path from 'path';
 const {
     extrackSinglePackageInfo,
     resolvePacakgePath,
-    upcaseFirstLetter,
     buildPackageName,
 } = require('./utils');
 
@@ -27,7 +26,10 @@ console.log(packageInfo.dependencies);
 
 const extensions = [ '.ts', '.d.ts', '.js' ];
 
-const isMainPackage = dirName === 'term';
+const map = {
+    'easy-dom-util': 'EasyDom',
+    'tacl-ui': 'TaclUI'
+};
 
 const inputFile = resolvePacakgePath(`${dirName}/src/index.ts`);
 console.log(inputFile);
@@ -49,7 +51,7 @@ const createBaseConfig = ({
         output: {
             file: resolvePacakgePath(`${dirName}/dist/${bundleName}`),
             format,
-            name: `Demo${isMainPackage ? '' : upcaseFirstLetter(dirName)}`,
+            name: map[dirName],
             // sourcemap: true,
         },
         plugins: [

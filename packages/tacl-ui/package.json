@@ -7,7 +7,7 @@
     "repository": "git@github.com:theajack/ebuild-template-lerna.git",
     "author": "tackchen <theajack@qq.com>",
     "scripts": {
-        "build": "node ../../scripts/build/build.js utils"
+        "build": "node ../../scripts/build/build.js tacl-ui"
     },
     "license": "",
     "type": "module",
@@ -17,6 +17,6 @@
     "publishConfig": {
         "registry": "https://registry.npmjs.org/"
     },
-    "unpkg": "dist/demo-utils.min.js",
-    "jsdelivr": "dist/demo-utils.min.js"
+    "unpkg": "dist/tacl-ui.min.js",
+    "jsdelivr": "dist/tacl-ui.min.js"
 }
