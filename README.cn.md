@@ -4,7 +4,7 @@
 
 ----
 
-[English](https://github.com/theajack/easy-dom#easy-dom) | [Version Log](https://github.com/theajack/easy-dom/blob/master/helper/version.md)
+[English](https://github.com/theajack/easy-dom#easy-dom) | [Version Log](https://github.com/theajack/easy-dom/blob/master/scripts/version.md)
 
 [TOC]
 
