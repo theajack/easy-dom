@@ -1,23 +1,22 @@
-import {$, reportStyle, initTaclUI} from './style';
+import { IJson } from 'easy-dom-util';
+import { ToastPosition } from './enum';
+import { $, reportStyle, initTaclUI } from './style';
+import { IToast, IToastDefault, IToastOptions } from './type';
 
-const TOAST_POSITION = {
-    TOP: 'top',
-    MIDDLE: 'middle',
-    BOTTOM: 'bottom',
-};
 
 const prefix = 'g-toast-';
 
-const instance = {
+const instance: IToast = {
     el: null,
     timer: null,
     lastParent: null,
     onhide: null,
     onopen: null,
-};
+} as any;
 
 reportStyle(initStyle);
-function toast (text, time, target = instance) {
+
+const toast = ((arg: string|IToastOptions, time?: number, target: IToast = instance) => {
     let parent;
     if (target.onhide) {
         target.onhide();
@@ -25,33 +24,34 @@ function toast (text, time, target = instance) {
     target.onhide = null;
     target.onopen = null;
     let contentHtml = false;
-    let position = TOAST_POSITION.MIDDLE;
+    let position = ToastPosition.Middle;
     let customClass = '';
     let showClose = false;
     let button = null;
-    if (typeof text === 'object') {
-        button = text.button;
-        showClose = text.showClose;
-        time = text.time;
-        position = text.position;
-        parent = text.parent;
-        if (text.onhide) {
-            target.onhide = text.onhide;
-        }
-        target.onopen = text.onopen;
-        customClass = text.customClass || '';
-        if (typeof text.contentHtml === 'boolean') {
-            contentHtml = text.contentHtml;
+    let text = '';
+    if (typeof arg === 'object') {
+        button = arg.button;
+        showClose = arg.showClose ?? false;
+        time = arg.time;
+        if (arg.position) position = arg.position;
+        parent = arg.parent;
+        if (arg.onhide) target.onhide = arg.onhide;
+        if (arg.onopen) target.onopen = arg.onopen;
+        customClass = arg.customClass || '';
+        if (typeof arg.contentHtml === 'boolean') {
+            contentHtml = arg.contentHtml;
         }
         // 最后赋值
-        text = text.text;
+        text = arg.text || '';
+    } else {
+        text = arg;
     }
     target.customClass = customClass;
-    init({text, time, position, parent, contentHtml, target, showClose, button});
-}
+    init({ text, time, position, parent, contentHtml, target, showClose, button });
+}) as IToastDefault;
 
-toast.new = function (text, time, fn = toast) {
-    const target = {};
+toast.create = function (text, time, fn: IToastDefault = toast) {
+    const target = {} as IToast;
     fn(text, time, target);
     return () => {
         close(target);
@@ -62,16 +62,16 @@ toast.close = close;
 function init ({
     text = '',
     time = 2000,
-    position = TOAST_POSITION.MIDDLE,
+    position = ToastPosition.Middle,
     parent = document.body,
     contentHtml,
     target,
     showClose,
     button,
-}) {
+}: IToastOptions & {target: IToast}) {
     parent = $.query(parent);
     if (!target.el) {
-        target.el = {};
+        target.el = {} as any;
         target.lastParent = parent;
         $.classPrefix(prefix);
         const wrapper = $.create().cls('wrapper');
@@ -84,7 +84,7 @@ function init ({
 
         const btnEl = $.create('span').cls('btn');
 
-        wrapper.append([content, closeEl, btnEl]);
+        wrapper.append([ content, closeEl, btnEl ]);
         $.clearClassPrefix();
         initTaclUI(wrapper);
         $.query(parent).append(wrapper);
@@ -96,10 +96,12 @@ function init ({
         target.lastParent = parent;
         parent.append(target.el.wrapper);
     }
-    open({text, time, position, contentHtml, target, showClose, button});
+    open({ text, time, position, contentHtml, target, showClose, button });
 }
 
-function open ({text, time, position, contentHtml, target, showClose, button}) {
+function open ({
+    text, time, position, contentHtml, target, showClose, button
+}: IToastOptions & {target: IToast}) {
     const autoClose = typeof time === 'number';
     target.el.isOpen = true;
     target.el.wrapper.style('display', 'block');
@@ -161,7 +163,7 @@ function close (target = instance) {
     return false;
 }
 
-function initStyle (common) {
+function initStyle (common: IJson<any>) {
     return /* css*/`
     .g-toast-wrapper {
         ${common.piece.centerWrapper}

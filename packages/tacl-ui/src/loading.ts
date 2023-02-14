@@ -1,38 +1,39 @@
-import {$, reportStyle, initTaclUI} from './style';
+import { IJson, TEleCommon } from 'easy-dom-util';
+import { $, reportStyle, initTaclUI } from './style';
+import { ILoading, ILoadingDefault } from './type';
 
 const prefix = 'g-loading-';
 // 单例模式
-const instance = {
+const instance: ILoading = {
     el: null,
     timer: null,
     lastParent: null,
     onhide: null,
     onopen: null,
-};
- 
+} as any;
+
 reportStyle(initStyle);
-function loading (text, time, target = instance) {
+const loading = ((text, time, target: ILoading = instance) => {
     let parent;
     if (target.onhide) {
         target.onhide();
     }
     target.onhide = null;
     target.onopen = null;
-    let backgroundOpacity = '';
+    let backgroundOpacity: number|undefined;
     if (typeof text === 'object') {
         parent = text.parent;
         time = text.time;
-        if (text.onhide) {
-            target.onhide = text.onhide;
-        }
-        target.onopen = text.onopen;
+        if (text.onhide) target.onhide = text.onhide;
+        if (text.onopen) target.onopen = text.onopen;
         backgroundOpacity = text.backgroundOpacity;
-        text = text.text;
+        text = text.text || '';
     }
     init(text, time, target, parent, backgroundOpacity);
-}
-loading.new = function (text, time, fn = loading) {
-    const target = {};
+}) as ILoadingDefault;
+
+loading.create = function (text, time?: number, fn: ILoadingDefault = loading) {
+    const target: ILoading = {} as any;
     fn(text, time, target);
     return () => {
         close(target);
@@ -40,10 +41,16 @@ loading.new = function (text, time, fn = loading) {
 };
 loading.close = close;
 
-function init (text, time, target, parent = document.body, backgroundOpacity) {
+function init (
+    text: string,
+    time: number|undefined,
+    target: ILoading,
+    parent: TEleCommon = document.body,
+    backgroundOpacity?: number
+) {
     parent = $.query(parent);
     if (!target.el) {
-        target.el = {};
+        target.el = {} as any;
         target.lastParent = parent;
         $.classPrefix(prefix);
         const mask = $.create().cls('mask');
@@ -67,7 +74,7 @@ function init (text, time, target, parent = document.body, backgroundOpacity) {
     open(text, time, target);
 }
 
-function open (text, time, target) {
+function open (text: string, time?: number, target = instance) {
     const autoClose = typeof time === 'number';
     target.el.isOpen = true;
     target.el.mask.style('display', 'block');
@@ -102,7 +109,7 @@ function close (target = instance) {
     }
 }
 
-function initStyle (common) {
+function initStyle (common: IJson<any>) {
     return /* css*/`
     .g-loading-mask{
         ${common.piece.mask};

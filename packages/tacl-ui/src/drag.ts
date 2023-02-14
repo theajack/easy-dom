@@ -2,7 +2,8 @@
 // import {$, isUndf, df, registTouchEvent} from '../bridge';
 // import {reportStyle} from '../style';
 
-import {$, reportStyle} from './style';
+import { Ele, TEleCommon } from 'easy-dom-util';
+import { $, reportStyle } from './style';
 
 /**
  * 拖动组件
@@ -20,12 +21,55 @@ import {$, reportStyle} from './style';
 
 reportStyle(initStyle);
 
+export interface IDragOptions {
+    el: TEleCommon;
+    parent?: TEleCommon;
+    enableDrag?: boolean;
+    onClick?: () => void;
+    onSideChange?: () => void;
+    onDragStart?: () => void;
+    onDragMove?: () => void;
+    onDragEnd?: () => void;
+    zIndex?: number;
+    delay?: number;
+    aside?: boolean;
+    preventDefault?: boolean;
+    reinitPosition?: boolean;
+    position?: null;
+    margin?: number|number[];
+}
+
 const prefix = 'g-drag-';
 const df = function () {};
 class Drag {
+    el: Ele;
+    parent: Ele|null;
+    margin: number[];
+
+    preventDefault: boolean;
+    disX: number;
+    disY: number;
+    moveX: number;
+    moveY: number;
+    L: number;
+    T: number;
+    starX: number;
+    starY: number;
+    startTime: number;
+    left: 'auto'|number;
+    top: 'auto'|number;
+    enableDrag: boolean; // 是否启用可拖拽
+    onClick: ()=>void; // 点击事件
+    onSideChange: ()=>void; // 吸附边改变的事件
+    sideLeft = false; // 是否吸附在左侧
+    aside: boolean; // 是否吸附在两侧
+    onDragStart: ()=>void;
+    onDragMove: ()=>void;
+    onDragEnd: ()=>void;
+
     constructor ({
         el,
-        parent = null,
+        parent,
         enableDrag = true,
         onClick = df,
         onSideChange = df,
@@ -39,11 +83,11 @@ class Drag {
         reinitPosition = false,
         position = null,
         margin = 3, // 上右下左 或者只传入一个数字
-    }) {
+    }: IDragOptions) {
         this.el = $.create().cls(`${prefix}wrapper`);
-        this.el.append(el);
+        this.el.append($.query(el));
         this.parent = null;
-        if (parent === null) {
+        if (!parent) {
             parent = $.query(document.body);
         } else {
             parent = $.query(parent);
@@ -51,11 +95,8 @@ class Drag {
             this.parent = parent;
         }
         parent.append(this.el);
-        if (typeof margin === 'number') {
-            margin = [margin, margin, margin, margin];
-        }
+        this.margin = (typeof margin === 'number') ? new Array(4).fill(margin) : margin;
         this.preventDefault = preventDefault;
-        this.margin = margin;
         this.disX;
         this.disY;
         this.moveX;
@@ -92,7 +133,7 @@ class Drag {
         }
     }
 
-    touchActiveInit (zIndex) {
+    touchActiveInit (zIndex: number) {
         this.el.style({
             left: 'auto',
             top: 'auto',
@@ -114,7 +155,7 @@ class Drag {
             height: this.parent.el.offsetHeight,
         };
     }
-    initPosition (init, position) {
+    initPosition (init?: boolean, position?: {left: number, top: number}|null) {
         setTimeout(() => {
             if (position) {
                 this.setPosition(position.left, position.top);
@@ -131,7 +172,7 @@ class Drag {
             this.setPosition(left, top);
         }, 50);
     }
-    setPosition (left, top) {
+    setPosition (left: number, top?: number) {
         this.left = left;
         this.el.style('left', `${this.left}px`);
         if (typeof top !== 'undefined') {
@@ -139,7 +180,7 @@ class Drag {
             this.el.style('top', `${this.top}px`);
         }
     }
-    touchStart (e) {
+    touchStart (e: TouchEvent) {
         if (this.preventDefault) e.preventDefault(); // 阻止触摸时页面的滚动，缩放
         this.disX = e.touches[0].clientX - this.el.dom().offsetLeft;
         this.disY = e.touches[0].clientY - this.el.dom().offsetTop;
@@ -148,7 +189,7 @@ class Drag {
         this.starY = e.touches[0].clientY;
         this.onDragStart.call(this, e, this.starX, this.starY);
     }
-    touchMove (e) {
+    touchMove (e: TouchEvent) {
         const size = this.getParentSize();
         this.L = e.touches[0].clientX - this.disX;
         this.T = e.touches[0].clientY - this.disY;
@@ -170,7 +211,7 @@ class Drag {
             this.onDragMove.call(this, e, this.moveX, this.moveY);
         }
     }
-    touchEnd (e) {
+    touchEnd (e: TouchEvent) {
         if (this.preventDefault) e.preventDefault();
         const dom = this.el.dom();
         let endX = e.changedTouches[0].clientX;

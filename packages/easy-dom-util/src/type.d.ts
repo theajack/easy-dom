@@ -11,23 +11,9 @@ export type TTag =
   'abbr'| 'article'| 'aside'| 'b'| 'base'| 'bdi'| 'bdo'| 'blockquote'| 'caption'| 'cite'| 'del'| 'details'| 'dialog' |
   'em'| 'embed'| 'figure'| 'footer'| 'header'| 'hr'| 'menu'| 'nav'| 'noscript' |
   'object'| 'progress'| 'section'| 'slot'| 'small'| 'strong'| 'sub'| 'summary'| 'sup'| 'template' |
-  'title'| 'var';
+  'title'| 'var' |
+  'style' | 'meta' | 'head' | 'link' & string;
 
-export interface IJson<T=string> {
+export interface IJson<T=any> {
   [prop: string]: T
 }
-
-export type TEvent =
-  'click'| 'mousedown'| 'mouseenter'| 'mouseleave'| 'mousemove'| 'mouseover'| 'mouseup'|
-  'touchend'| 'touchmove'| 'touchstart'| 'wheel'| 'input'| 'change' |
-  'fullscreenchange' | 'fullscreenerror' | 'copy' | 'cut' | 'paste' | 'abort' | 'auxclick' |
-  'beforeinput' | 'blur' | 'canplay' | 'canplaythrough' | 'close' |
-  'compositionend' | 'compositionstart' | 'compositionupdate' | 'contextmenu' |
-  'cuechange' | 'dblclick' | 'drag' | 'dragend' | 'dragenter' | 'dragleave' | 'dragover' |
-  'dragstart' | 'drop' | 'durationchange' | 'emptied' | 'ended' | 'error' | 'focus' | 'focusin' |
-  'focusout' | 'formdata' | 'gotpointercapture' | 'invalid' | 'keydown' | 'keypress' |
-  'keyup' | 'load' | 'loadeddata' | 'loadedmetadata' | 'loadstart' | 'lostpointercapture' |
-  'mouseout' | 'pause' | 'play' | 'playing' | 'pointercancel' | 'pointerdown' | 'pointerenter' | 'pointerleave' |
-  'pointermove' | 'pointerout' | 'pointerover' | 'pointerup' | 'progress' | 'ratechange' | 'reset' |
-  'resize' | 'scroll' | 'select' | 'selectionchange' | 'selectstart' | 'submit' | 'suspend' | 'timeupdate' |
-  'toggle' | 'touchcancel';

@@ -1,4 +1,11 @@
+/*
+ * @Author: chenzhongsheng
+ * @Date: 2023-02-14 16:11:04
+ * @Description: Coding something
+ */
+import { TEleCommon } from './ele';
 import $ from './index';
+import { IJson } from './type';
 
 const df = function () {};
 
@@ -7,6 +14,11 @@ export function registTouchEvent ({
     touchStart = df,
     touchMove = df,
     touchEnd = df,
+}: {
+    el: TEleCommon,
+    touchStart: (e: TouchEvent)=>void,
+    touchMove: (e: TouchEvent)=>void,
+    touchEnd: (e: TouchEvent)=>void,
 }) {
     if (isMobile()) {
         $.query(el).on({
@@ -14,13 +26,6 @@ export function registTouchEvent ({
             touchmove: touchMove,
             touchend: touchEnd
         });
-        // document.body.addEventListener(
-        //     'touchmove',
-        //     function (e) {
-        //         e.preventDefault(); // 阻止默认的处理方式(阻止下拉滑动的效果)
-        //     },
-        //     {passive: false}
-        // );
     } else {
         let isMouseDown = false;
         $.query(el).on({
@@ -51,8 +56,8 @@ function isMobile () {
     return (/Android|iPad|iPhone|iPod|BlackBerry/i.test(navigator.userAgent));
 }
 
-function buildTouchWithMouse (event, type) {
-    const es = [{
+function buildTouchWithMouse (event: IJson<any>, type: 'touchstart'|'touchmove'|'touchend'): TouchEvent {
+    const es = [ {
         clientX: event.clientX,
         clientY: event.clientY,
         force: 1,
@@ -65,9 +70,9 @@ function buildTouchWithMouse (event, type) {
         screenX: event.screenX,
         screenY: event.screenY,
         target: event.target
-    }];
+    } ];
     event.touchType = type;
     event.touches = (type === 'touchend') ? [] : es;
     event.changedTouches = es;
-    return event;
+    return event as unknown as TouchEvent;
 }

@@ -11,7 +11,7 @@ const { initPackageInfo, resolveRootPath, writeJsonIntoFile } = require('./build
 
 const isDev = process.argv[2] === 'dev';
 
-initPackageInfo(isDev);
+initPackageInfo(isDev, true);
 
 let version = process.argv[3];
 

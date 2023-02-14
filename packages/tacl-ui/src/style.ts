@@ -1,8 +1,14 @@
+/*
+ * @Author: chenzhongsheng
+ * @Date: 2023-02-14 16:11:04
+ * @Description: Coding something
+ */
 /* 添加style样式*/
 // import {$} from './bridge';
 // import commonStyle from './common-ui/commonStyle';
 import tool from './easydom';
 import commonStyle from './commonStyle';
+import { Ele, IJson } from 'easy-dom-util';
 export const $ = tool;
 
 $.addCommonStyle(commonStyle);
@@ -13,7 +19,10 @@ export function initStylePool () {
     $.initStylePool();
 }
 
-export function reportStyle (func, id = 'TACL-UI') {
+export function reportStyle (
+    func: string | ((common: IJson<string>)=>string),
+    id = 'TACL-UI'
+) {
     $.reportStyle({
         func,
         id,
@@ -21,10 +30,10 @@ export function reportStyle (func, id = 'TACL-UI') {
     });
 }
 
-export function initTaclUI (el) {
+export function initTaclUI (el: Ele) {
     el.addClass('tacl-ui');
 }
- 
+
 function initStyle () {
     return /* css */`
         .tacl-ui{

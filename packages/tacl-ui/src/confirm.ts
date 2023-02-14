@@ -16,31 +16,35 @@
     confirm('是否确认')
     confirm('是否确认','确认框')
  */
-import { CONFIRM_STYLE, CONFIRM_TYPE } from './constant';
+import { IJson } from 'easy-dom-util';
+import { ConfirmStyle, ConfirmType } from './enum';
 import { $, reportStyle, initTaclUI } from './style';
+import { IConfirm, IConfirmDefault, IConfirmOptions, TConfirmResult } from './type';
 
 reportStyle(initStyle);
 
 const prefix = 'g-confirm-';
 
-const instance = {
+const instance: IConfirm = {
     el: null,
     onhide: null,
     onopen: null,
     lastParent: null,
     lastCustomed: false,
-};
+    _isDefault: true
+} as any;
 
-function checkLastCustomed (target) {
+function checkLastCustomed (target: IConfirm) {
     if (!target.lastCustomed || !target.el) {
         return;
     }
     target.el.mask.remove();
+    // @ts-ignore
     target.el = null;
     target.lastCustomed = false;
 }
 
-function confirm (text, title, target = instance) {
+const confirm = (function (text, title = '', target = instance): Promise<TConfirmResult> {
     if (target.onhide) {
         target.onhide();
     } // 关闭上一个
@@ -53,17 +57,18 @@ function confirm (text, title, target = instance) {
             reject(e);
         }
     });
-}
-confirm.new = function (text, title, fn = confirm) {
-    return fn(text, title, {});
+}) as IConfirmDefault;
+confirm.create = function (text: string|IConfirmOptions, title = '', fn = confirm) {
+    return fn(text, title, {} as IConfirm);
 };
 confirm.close = close;
-confirm.theme = CONFIRM_STYLE.DEFAULT;
-confirm.onOptions = null;
+confirm.theme = ConfirmStyle.Default;
+confirm.onOptions = undefined;
 
-function initTarget (target, options) {
+function initTarget (target: IConfirm, options: IConfirmOptions) {
     const parent = $.query((typeof options === 'object' && options.parent) ? options.parent : document.body);
     if (!target.el) {
+        // @ts-ignore
         target.el = {};
         target.lastParent = parent;
         $.classPrefix(prefix);
@@ -91,8 +96,8 @@ function initTarget (target, options) {
         target.lastParent = parent;
         parent.append(target.el.mask);
     }
-    target.onopen = options.onopen;
-    target.onhide = options.onhide;
+    target.onopen = options.onopen || null;
+    target.onhide = options.onhide || null;
     if (options.onGetCloseMethod) { // 用来关闭new出来的confirm
         options.onGetCloseMethod(() => {
             close(target);
@@ -100,7 +105,7 @@ function initTarget (target, options) {
     }
 }
 
-const DEFAULT_OPTIONS = {
+const DEFAULT_OPTIONS: IConfirmOptions = {
     title: '提示框',
     text: '是否确认该操作',
     confirmText: '确定',
@@ -108,33 +113,36 @@ const DEFAULT_OPTIONS = {
     cancelBtn: true,
     confirmBtn: true,
     closeBtn: true,
-    theme: 'default',
+    theme: ConfirmStyle.Default,
     customClass: '',
     customEl: '',
     contentHtml: false,
-    custom: null,
-    type: 'confirm',
-    onGetCloseMethod: null,
+    custom: undefined,
+    type: ConfirmType.Confirm,
+    onGetCloseMethod: undefined,
     clickConfirmClose: true,
     clickCancelClose: true,
-    onconfirm: null,
-    oncancel: null,
+    onconfirm: undefined,
+    oncancel: undefined,
 };
 
-function initOptions (options, title) {
+function initOptions (
+    options: string|IConfirmOptions,
+    title?: string
+): IConfirmOptions {
     if (typeof options === 'string') {
         options = { title, text: options };
     }
-    if (options.type === CONFIRM_TYPE.CONFIRM) {
+    if (options.type === ConfirmType.Confirm) {
         if (!options.theme) options.theme = confirm.theme; // 如果没有主题参数 则使用全局主题参数
         if (confirm.onOptions) {
             options = confirm.onOptions(options);
         }
     }
-    return Object.assign({}, DEFAULT_OPTIONS, options);
+    return Object.assign({}, DEFAULT_OPTIONS, options) as IConfirmOptions;
 }
 
-function initContent (target, options) {
+function initContent (target: IConfirm, options: IConfirmOptions) {
     target.el.content.empty();
     if (options.customEl) {
         target.lastCustomed = true;
@@ -144,14 +152,19 @@ function initContent (target, options) {
             target.el.content.append($.query(options.customEl));
         }
     } else {
-        target.el.content[options.contentHtml ? 'html' : 'text'](options.text);
+        target.el.content[options.contentHtml ? 'html' : 'text'](options.text || '');
     }
 }
 
-function init (options, title, resolve, target) {
+function init (
+    origin: string|IConfirmOptions,
+    title: string,
+    resolve: (result: TConfirmResult)=>void,
+    target: IConfirm,
+) {
     checkLastCustomed(target);
 
-    options = initOptions(options, title);
+    const options = initOptions(origin, title) as Required<IConfirmOptions>;
 
     initTarget(target, options);
 
@@ -193,10 +206,11 @@ function init (options, title, resolve, target) {
     open(target);
 }
 
-function open (target) {
+function open (target: IConfirm) {
     target.el.isOpen = true;
     target.el.mask.style('display', 'block');
     window.setTimeout(() => {
+        console.log(target.el.mask);
         target.el.mask.addClass(`${prefix}open`);
         if (target.onopen) {
             const _onopen = target.onopen;
@@ -215,10 +229,10 @@ function close (target = instance) {
                 target.onhide = null;
                 _onhide();
             }
-            if (target !== instance) {
-                target.el.mask.remove();
-            } else {
+            if (target._isDefault) {
                 target.el.mask.style('display', 'none');
+            } else {
+                target.el.mask.remove();
             }
         }, 350);
         return true;
@@ -226,7 +240,7 @@ function close (target = instance) {
     return false;
 }
 
-function initStyle (common) {
+function initStyle (common: IJson<any>) {
     return /* css*/`
         .g-confirm-mask {
             ${common.piece.mask}

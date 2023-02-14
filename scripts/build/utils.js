@@ -50,13 +50,13 @@ function traverseDir (path, callback) {
     });
 }
 
-function initPackageInfo (isDev) {
+function initPackageInfo (isDev, setVesionTs = false) {
     traverseDir(resolveRootPath('packages'), (dir) => {
-        initSinglePackageInfo(dir, isDev);
+        initSinglePackageInfo(dir, isDev, setVesionTs);
     });
 }
 
-function initSinglePackageInfo (dir, isDev = false) {
+function initSinglePackageInfo (dir, isDev = false, setVesionTs = false) {
     const packagePath = resolvePacakgePath(`${dir}/package.json`);
     const package = require(packagePath);
     const packageName = buildPackageName(dir);
@@ -77,6 +77,9 @@ function initSinglePackageInfo (dir, isDev = false) {
         registry: 'https://registry.npmjs.org/',
     };
     writeJsonIntoFile(package, packagePath);
+
+    if (setVesionTs) writeStringIntoFile(`export default '${package.version}';`, resolvePacakgePath(`${dir}/src/index.ts`));
+
     fs.copyFileSync(resolveRootPath('README.md'), resolvePacakgePath(`${dir}/README.md`));
     fs.copyFileSync(resolveRootPath('LICENSE'), resolvePacakgePath(`${dir}/LICENSE`));
     fs.copyFileSync(resolveRootPath('scripts/helper/.npmignore'), resolvePacakgePath(`${dir}/.npmignore`));

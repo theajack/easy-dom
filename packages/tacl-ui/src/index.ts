@@ -12,7 +12,7 @@ import _toast from './toast';
 import _confirm from './confirm';
 import _alert from './alert';
 import _pop from './pop';
-import Drag from './drag';
+import Drag, { IDragOptions } from './drag';
 import version from './version';
 
 export const tool = easyDom;
@@ -23,7 +23,7 @@ export const confirm = _confirm;
 export const alert = _alert;
 export const pop = _pop;
 
-export const drag = opts => new Drag(opts);
+export const drag = (opts: IDragOptions) => new Drag(opts);
 
 initStylePool();
 

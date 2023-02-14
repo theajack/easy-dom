@@ -7,12 +7,15 @@
 /**
  * 主要用来操作dom的工具方法
  */
-import { checkDom, query, create } from './ele';
+import { checkDom, query, create, exist } from './ele';
 import { reportStyle, addCommonStyle, initStylePool } from './style';
 import { registTouchEvent } from './touchEvent';
 import version from './version';
 import { classPrefix, clearClassPrefix } from './class-prefix';
-import { ISize } from './type';
+import { ISize } from './type.d';
+
+export { TEleCommon, Ele } from './ele';
+export * from './type.d';
 
 let fixWindowSize: ISize | null = null;
 
@@ -20,7 +23,7 @@ let fixWindowSize: ISize | null = null;
 // window.innerWidth： 包含滚动条 在ios safari 下准确
 // document.documentElement.clientWidth 不包滚动条，但是在ios safari下 document.documentElement.clientHeight 不准
 // 移动端一般没有滚动条，所以默认在pc上使用document.documentElement，移动端使用window.innerWidth
-function windowSize (useInner: boolean) {
+function windowSize (useInner = false) {
     if (fixWindowSize) {
         return {
             width: fixWindowSize.width,
@@ -56,8 +59,9 @@ function isMobile () {
     return false;
 }
 
-export default {
+const $ = {
     query,
+    exist,
     create,
     classPrefix,
     clearClassPrefix,
@@ -73,3 +77,24 @@ export default {
     version,
     setWindowSize
 };
+
+export {
+    query,
+    exist,
+    create,
+    classPrefix,
+    clearClassPrefix,
+    checkDom,
+    reportStyle,
+    addCommonStyle,
+    initStylePool,
+    registTouchEvent,
+    windowSize,
+    isMobile,
+    version,
+    setWindowSize
+};
+
+export type TEasyDomUtil = typeof $;
+
+export default $;

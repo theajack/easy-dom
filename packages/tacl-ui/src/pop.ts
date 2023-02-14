@@ -1,37 +1,39 @@
 /*
  * @Author: tackchen
  * @Date: 2021-10-01 11:11:43
- * @LastEditors: tackchen
+ * @LastEditors: Please set LastEditors
  * @FilePath: \gamematrix-h5-site\client\js-sdk\tacl-ui\src\pop.js
  * @Description: Coding something
  */
 
+import { Ele } from 'easy-dom-util';
 import _confirm from './confirm';
-import {CONFIRM_STYLE, CONFIRM_TYPE} from './constant';
-const popInstance = {};
-const pop = (options, title, target = popInstance) => {
+import { ConfirmStyle, ConfirmType } from './enum';
+import { IConfirm, IPopDefault } from './type';
+const popInstance: IConfirm = { _isDefault: true } as IConfirm;
+const pop = ((options, title, target = popInstance) => {
     if (
         typeof options === 'string' // html text
         || options instanceof HTMLElement // dom
-        || options.constructor.name === 'Ele' // tacl ele
+        || options instanceof Ele // tacl ele
     ) {
         options = {
             customEl: options,
             title,
         };
     }
-    options.type = CONFIRM_TYPE.POP;
+    options.type = ConfirmType.Pop;
     if (!options.theme) options.theme = pop.theme; // 如果没有主题参数 则使用全局主题参数
     if (pop.onOptions) {
         options = pop.onOptions(options);
     }
     return _confirm(options, undefined, target);
-};
-pop.theme = CONFIRM_STYLE.DEFAULT;
-pop.new = (text, title, fn = pop) => fn(text, title, {});
+}) as IPopDefault;
+pop.theme = ConfirmStyle.Default;
+pop.create = (text, title, fn = pop) => fn(text, title, {} as IConfirm);
 pop.close = (target = popInstance) => {
-    _confirm.close(target);
+    return _confirm.close(target);
 };
-pop.onOptions = null;
+pop.onOptions = undefined;
 
 export default pop;

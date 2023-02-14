@@ -1,30 +1,44 @@
+/*
+ * @Author: chenzhongsheng
+ * @Date: 2023-02-14 16:11:04
+ * @Description: Coding something
+ */
 // for Ele.render method
 
-export function render ({
+import { Ele } from './ele';
+import { IJson } from './type';
+
+export function render (this: Ele, {
     html,
     method = {},
-    result = null
+    result
+}: {
+    html: string,
+    method?: IJson<Function>,
+    result?: (this: Ele, options: {el: Ele, method: IJson<Function>})=>void;
 }) {
     this.html(zipHtml(html));
-    const el = {};
+    const el: IJson<Ele> = {};
     if (typeof result === 'function') {
         const els = this.query('[\\@el]');
-        for (let i = 0; i < els.length; i++) {
-            const item = els[i];
-            el[item.attr('@el')] = item;
-            item.attr('@el', null);
+        if (els) {
+            for (let i = 0; i < els.length; i++) {
+                const item = els[i];
+                el[item.attr('@el')] = item;
+                item.attr('@el', null);
+            }
+            result.call({
+                el: this,
+                method,
+            }, el);
         }
-        result.call({
-            el: this,
-            method,
-        }, el);
     }
     const list = this.query('[\\@event]');
     for (let i = 0; i < list.length; i++) {
         const item = list[i];
         const res = buildEventResult(item);
         if (method[res.name]) {
-            item.on(res.event, method[res.name].bind({
+            item.on(res.event as any, method[res.name].bind({
                 el: this,
                 bindEl: el,
                 self: item,
@@ -36,7 +50,7 @@ export function render ({
     return this;
 }
 
-function buildEventResult (item) {
+function buildEventResult (item: Ele) {
     const arr = item.attr('@event').split(':');
     item.attr('@event', null);
     let event = 'click', name, args = [];
@@ -62,7 +76,7 @@ function buildEventResult (item) {
     };
 }
 
-function zipHtml (html) {
+function zipHtml (html: string) {
     return html.replace(new RegExp('\\n *', 'g'), '').replace(new RegExp('<!--(.|\\n)*?-->', 'g'), '')
         .trim();
 }

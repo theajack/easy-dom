@@ -2,17 +2,17 @@ import { checkPrefix, getClassPrefix } from './class-prefix';
 import parseTag from './parseTag';
 import { render } from './render';
 
-import { IJson, TEvent, TTag } from './type';
+import { IJson, TTag } from './type';
 
 export class Ele {
 
     el: HTMLElement;
 
-    constructor ({ tag, ele }: {tag: TTag | string, ele: HTMLElement}) {
+    constructor ({ tag, ele }: {tag?: TTag | string, ele?: HTMLElement}) {
         if (ele) {
             this.el = ele;
         } else {
-            const res = parseTag(tag);
+            const res = parseTag(tag as string);
             this.el = document.createElement(res.tag);
             if (res.cls) {this.cls(res.cls);}
             if (res.attr) {this.attr(res.attr);}
@@ -23,7 +23,9 @@ export class Ele {
         return this.el;
     }
 
-    cls (cls, withPrefix = true) {
+    cls (): string;
+    cls (cls: string, withPrefix?: boolean): this;
+    cls (cls?: string, withPrefix = true) {
         if (typeof cls === 'undefined') {
             return this.el.className;
         }
@@ -46,7 +48,7 @@ export class Ele {
     }
 
     attr (name: string): string;
-    attr (name: IJson): IJson;
+    attr (name: IJson): this;
     attr (name: string, value: string|number|null): this;
     attr (name: string|IJson, value?: string | number| null): string|IJson|this {
         if (typeof name === 'object') {
@@ -76,8 +78,8 @@ export class Ele {
     }
 
     style (name: string[]): IJson;
-    style (name: IJson): this;
     style (name: string): string;
+    style (name: IJson): this;
     style (name: string, value: string): this;
     style (name: string[]|IJson|string, value?: string) {
         if (typeof value === 'undefined') {
@@ -95,27 +97,28 @@ export class Ele {
             }
             return getComputedStyle(this.el)[name as any]; // 返回查询到的样式
         }  // 根据name value 设置样式
+
         if (value.indexOf('!important') !== -1) {
-            this.el.style.setProperty(name as string, checkCssValue(this.el, name, value.substring(0, value.indexOf('!important'))), 'important');
+            this.el.style.setProperty(name as string, checkCssValue(this.el, name as string, value.substring(0, value.indexOf('!important'))), 'important');
         } else {
-            this.el.style.setProperty(name as string, checkCssValue(this.el, name, value));
+            this.el.style.setProperty(name as string, checkCssValue(this.el, name as string, value));
         }
         return this;
     }
 
     text (): string;
-    text (text: string): this;
-    text (text?: string): string | this {
+    text (text: string|number): this;
+    text (text?: string|number): string | this {
         if (typeof text === 'undefined') {
             return this.el.innerText;
         }
-        this.el.innerText = text;
+        this.el.innerText = text + '';
         return this;
     }
 
     value (): string;
-    value (val: string): this;
-    value (val?: string): string | this {
+    value (val: string|number): this;
+    value (val?: string|number): string | this {
         if (typeof val === 'undefined') {
             // @ts-ignore
             return this.el.value;
@@ -126,30 +129,33 @@ export class Ele {
     }
 
     html (): string;
-    html (html: string): this;
-    html (html?: string): string | this {
+    html (html: string|number): this;
+    html (html?: string|number): string | this {
         if (typeof html === 'undefined') {
             return this.el.innerHTML;
         }
-        this.el.innerHTML = html;
+        this.el.innerHTML = html + '';
         return this;
     }
 
-    click (func: (this: HTMLElement, ev: HTMLElementEventMap['click']) => any, useCapture?: boolean) {
+    click (
+        func: (this: HTMLElement, ev: HTMLElementEventMap['click'], el: Ele) => any,
+        useCapture?: boolean
+    ) {
         return this.on('click', func, useCapture);
     }
 
     on<K extends keyof HTMLElementEventMap> (
         name: K,
-        func: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any,
+        func: (this: HTMLElement, ev: HTMLElementEventMap['click'], el: Ele) => any,
         useCapture?: boolean
     ): this;
     on (
-        name: {[prop in keyof HTMLElementEventMap]: (this: HTMLElement, ev: HTMLElementEventMap[prop]) => any},
+        name: {[prop in keyof HTMLElementEventMap]?: (this: HTMLElement, ev: HTMLElementEventMap[prop], el: Ele) => any},
         func?: boolean
     ): this;
     on<K extends keyof HTMLElementEventMap> (
-        name: K | {[prop in keyof HTMLElementEventMap]: (this: HTMLElement, ev: HTMLElementEventMap[prop]) => any},
+        name: K | {[prop in keyof HTMLElementEventMap]?: (this: HTMLElement, ev: HTMLElementEventMap[prop], el: Ele) => any},
         func?: Function | boolean,
         useCapture = false
     ): this {
@@ -164,11 +170,13 @@ export class Ele {
             throw new Error('事件类型应该为 function');
         }
         // @ts-ignore
-        this.el.addEventListener(name, func, useCapture);
+        this.el.addEventListener(name, (e: any) => {
+            func.call(this, e, this);
+        }, useCapture);
         return this;
     }
 
-    addClass (cls, withPrefix = true) {
+    addClass (cls: string, withPrefix = true) {
         cls = checkPrefix(cls, withPrefix);
         if (!this.hasClass(cls)) {
             if (this.el.className === '') {
@@ -180,19 +188,19 @@ export class Ele {
         return this;
     }
 
-    hasClass (cls, withPrefix = true) {
+    hasClass (cls: string, withPrefix = true) {
         cls = checkPrefix(cls, withPrefix);
         return getRegExp(cls).test(this.el.className);
     }
 
-    rmClass (cls, withPrefix = true) {
+    rmClass (cls: string, withPrefix = true) {
         cls = checkPrefix(cls, withPrefix);
         if (this.hasClass(cls)) {
             this.el.className = this.el.className.replace(getRegExp(cls), ' ').trim();
         }
         return this;
     }
-    replaceClass (a, b, withPrefix = true) {
+    replaceClass (a: string, b: string, withPrefix = true) {
         a = checkPrefix(a, withPrefix);
         b = checkPrefix(b, withPrefix);
         if (this.hasClass(a)) {
@@ -202,16 +210,14 @@ export class Ele {
         }
         return this;
     }
-    toggleClass (name) {
+    toggleClass (name: string) {
         return this.hasClass(name) ? this.rmClass(name) : this.addClass(name);
     }
 
-    append (...eles) {
-        eles.forEach((el) => {
+    append (...children: (Ele|Ele[]|null)[]) {
+        children.forEach((el) => {
             if (el instanceof Array) {
-                el.forEach((singleEl) => {
-                    this.appendSingle(singleEl);
-                });
+                el.forEach((singleEl) => {this.appendSingle(singleEl);});
             } else {
                 this.appendSingle(el);
             }
@@ -219,11 +225,11 @@ export class Ele {
         return this;
     }
 
-    appendSingle (el) {
+    appendSingle (el: Ele|null) {
         if (el === null) {
             return this;
         }
-        const dom = checkDom(el);
+        const dom = checkDom(el) as any;
         try {
             this.el.appendChild(dom);
         } catch (e) {
@@ -242,41 +248,46 @@ export class Ele {
         return this;
     }
 
-    name (name) {
+    name (): string;
+    name (name: string): this;
+    name (name?: string) {
+        if (typeof name === 'undefined') return this.attr('el-name');
         return this.attr('el-name', name);
     }
 
-    insert (...eles) {
-        const index = eles.shift();
+    insert (index: number|string, ...eles: (string | Ele | HTMLElement)[]) {
         if (eles[0] instanceof Array) {
             eles = eles[0];
         }
         const el = this.child(index);
-        if (el) {
-            eles.forEach((ele) => {
-                this.el.insertBefore(checkDom(ele), el.el);
-            });
-        } else {
-            this.append(...eles);
-        }
+        eles.forEach((ele) => {
+            const item = checkDom(ele);
+            if (!item) {
+                console.error(ele);
+                throw new Error(`Dom is not exist: ${ele.toString()}`);
+            }
+            this.el.insertBefore(item, el.el);
+        });
         return this;
     }
 
-    prepend (...eles) {
+    prepend (...eles: (string | Ele | HTMLElement)[]) {
         return this.insert(0, ...eles);
     }
 
-    before (...eles) {
+    before (...eles: (string | Ele | HTMLElement)[]) {
         return this.parent().insert(this.index(), ...eles);
     }
-    after (...eles) {
+    after (...eles: (string | Ele | HTMLElement)[]) {
         return this.parent().insert(this.index() + 1, ...eles);
     }
 
-    remove (arg) {
+    remove (arg?: number|Ele) {
         if (typeof arg === 'undefined') {
-            this.parent().remove(this);
-            return;
+            try {
+                this.parent().remove(this);
+            } catch (e) {}
+            return this;
         }
         if (typeof arg === 'number') {
             this.el.removeChild(this.el.children[arg]);
@@ -290,16 +301,16 @@ export class Ele {
         return this.html('');
     }
 
-    parent (index) {
+    parent (index?: number): Ele {
         if (typeof index === 'number') {
             if (index < 1) {
-                return null;
+                return this;
             };
-            let parent = this;
+            let parent: any = this;
             for (let i = 0; i < index; i++) {
                 parent = parent.parent();
                 if (!parent) {
-                    return null;
+                    throw new Error(`parent ${i} is not exist`);
                 }
             }
             return parent;
@@ -307,14 +318,19 @@ export class Ele {
         if (this.el.parentElement) {
             return new Ele({ ele: this.el.parentElement });
         }
-        return null;
+        throw new Error('parent is not exist');
     }
 
-    data (name, value) {
-        if (typeof this.el._ed_data === 'undefined') {
-            this.el._ed_data = {};
+    data (name: string): any;
+    data (): IJson;
+    data (name: IJson): this;
+    data (name: string, value: any): this;
+    data (name?: string|IJson, value?: any): any|IJson|this {
+        const el = this.el as any;
+        if (typeof el._ed_data === 'undefined') {
+            el._ed_data = {};
         }
-        let data = this.el._ed_data;
+        let data = el._ed_data;
         if (typeof name === 'undefined') {
             return data;
         }
@@ -341,9 +357,8 @@ export class Ele {
     index () {
         const a = this.parent().child();
         for (let i = 0; i < a.length; i++) {
-            if (a[i].el === this.el) {
+            if (a[i].el === this.el)
                 return i;
-            }
         }
         return -1;
     }
@@ -354,36 +369,46 @@ export class Ele {
         return this.next(-i);
     }
 
-    child (i) {
+    child(): Ele[];
+    child(i: number|string): Ele;
+    child (i?: number|string) {
         if (typeof i === 'number') {
             if (i >= this.el.children.length || i < 0) {
-                return null;
+                throw new Error('index is over limit');
             }
-            return new Ele({ ele: this.el.children[i] });
+            return new Ele({ ele: this.el.children[i] as HTMLElement });
         }
         if (typeof i === 'string') {
             return this.query(`[el-name="${i}"]`, true);
         }
-        return Array.prototype.slice.apply(this.el.children).map(dom => new Ele({ ele: dom }));
+        return domListToEles(this.el.children);
     }
-    brother (i) {
+    brother(): Ele[];
+    brother(i: number): Ele;
+    brother (i?: number) {
         if (typeof i === 'number') {
             return this.parent().child(i);
         }
         return this.parent().child();
     }
 
-    created (cb) {
+    created (cb: (this: Ele, self: Ele)=>void) {
         cb.call(this, this);
         return this;
     }
     // 被其他元素append
-    mounted (fn) {
+    mounted (fn: (this: Ele, self: Ele, parent: Ele)=>void) {
+        // @ts-ignore
         this.el.__ed_mounted = fn;
         return this;
     }
 
-    src (v) {
+    src(): string;
+    src(v: string): this;
+    src (v?: string) {
+        // @ts-ignore
+        if (typeof v === 'undefined') return this.dom().src;
+        // @ts-ignore
         this.dom().src = v;
         return this;
     }
@@ -392,18 +417,18 @@ export class Ele {
         return render.call(this, options);
     }
 
-    query (selector, one = false) {
+    query (selector: string, one: true): Ele;
+    query (selector: string, one?: false): Ele[];
+    query (selector: string, one = false): Ele|Ele[] {
         if (one) {
             const el = this.el.querySelector(selector);
-            if (el) {
-                return query(el);
-            }
-            return null;
+            if (el) return query(el as HTMLElement);
+            throw new Error('Element is not exist' + selector);
         }
         const list = this.el.querySelectorAll(selector);
-        const res = [];
+        const res: (Ele)[] = [];
         for (let i = 0; i < list.length; i++) {
-            res.push(query(list[i]));
+            res.push(query(list[i] as HTMLElement));
         }
         return res;
     }
@@ -416,13 +441,17 @@ export class Ele {
     setVisible (visible = true, display = 'block') {
         return visible ? this.show(display) : this.hide();
     }
+    mount (ele: TEleCommon = document.body) {
+        query(ele).append(this);
+        return this;
+    }
 }
 
 
-function getRegExp (name) {
+function getRegExp (name: string) {
     return new RegExp(`(^| )${name}($| )`);
 }
-function checkCssValue (a, c, d) {
+function checkCssValue (a: HTMLElement, c: string, d: string) {
     if (typeof d === 'string' && (d.indexOf('-=') !== -1 || d.indexOf('+=') !== -1)) {
         const e = getCssNumberValue(d.substring(d.indexOf('=') + 1));
         if (d.indexOf('-=') !== -1) {
@@ -430,24 +459,24 @@ function checkCssValue (a, c, d) {
         }
         let b;
         if (d.indexOf('%') !== -1) {
-            b = getCssNumberValue(a.style[c]);
+            b = getCssNumberValue(a.style[c as any]);
         } else {
-            b = getCssNumberValue(getComputedStyle(a)[c]);
+            b = getCssNumberValue(getComputedStyle(a)[c as any]);
         }
         return (e[0] + b[0]) + e[1];
     }
     return d;
 };
-function getCssNumberValue (a, b) {
-    if (a === '' || a === undefined) {
+function getCssNumberValue (a?: string, b?: string): [number, string] {
+    if (!a) {
         a = '0%';
     }
     if (b === undefined) {
-        if (a.has('px')) {
+        if (a.includes('px')) {
             b = 'px';
-        } else if (a.has('%')) {
+        } else if (a.includes('%')) {
             b = '%';
-        } else if (a.has('em')) {
+        } else if (a.includes('em')) {
             b = 'em';
         } else {
             return [ parseFloat(a), 'px' ];
@@ -457,7 +486,7 @@ function getCssNumberValue (a, b) {
 };
 
 
-export function checkDom (el) {
+export function checkDom (el: TEleCommon) {
     if (el instanceof HTMLElement) {
         return el;
     } if (typeof el === 'string') {
@@ -466,7 +495,12 @@ export function checkDom (el) {
     return el.el;
 }
 
-export function query (selector, all) {
+export type TEleCommon = string|HTMLElement|Ele;
+
+export function query (selector: TEleCommon, all: true): Ele[];
+export function query (selector: TEleCommon, all?: false|undefined): Ele;
+export function query (selector: TEleCommon, all = false): Ele[]|Ele {
+    if (selector instanceof Ele) return selector;
     if (selector instanceof HTMLElement) {
         return new Ele({ ele: selector });
     }
@@ -474,15 +508,23 @@ export function query (selector, all) {
         return selector;
     }
     if (all === true) {
-        return document.querySelectorAll(selector);
+        return domListToEles(document.querySelectorAll(selector));
     }
     const ele = document.querySelector(selector);
     if (!ele) {
-        return null;
+        console.error(ele);
+        throw new Error('Element is not exist');
     }
-    return new Ele({ ele });
+    return new Ele({ ele: ele as HTMLElement });
 }
 
-export function create (tag = 'div') {
+export function exist (selector: string): boolean {
+    return !!document.querySelector(selector);
+}
+
+export function create (tag: TTag = 'div') {
     return new Ele({ tag });
+}
+function domListToEles (list: (HTMLElement|Element)[]|NodeListOf<Element>|HTMLCollection) {
+    return [].slice.apply(list).map((dom: HTMLElement) => new Ele({ ele: dom }));
 }
