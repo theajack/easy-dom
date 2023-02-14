@@ -1,6 +1,4 @@
-/public/bundle.js
-/public/index.html
-/npm
-/cdn
-/helper/test.html
-/easy-dom
+node_modules
+scripts/dev/*.js
+*.html
+**/libs/*.js

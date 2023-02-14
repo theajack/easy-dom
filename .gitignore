@@ -1,4 +1,7 @@
-/node_modules
-/helper/copy-git-code.js
-/easy-dom
-readme.gitcode.txt
+node_modules
+dist
+cdn
+lerna-debug.log
+.pnpm-debug.log
+bundle.js
+bundle.js.map

@@ -1,0 +1,22 @@
+{
+    "name": "tacl-ui",
+    "version": "0.0.1",
+    "description": "lerna demo",
+    "main": "dist/demo-utils.esm.js",
+    "typings": "dist/demo-utils.d.ts",
+    "repository": "git@github.com:theajack/ebuild-template-lerna.git",
+    "author": "tackchen <theajack@qq.com>",
+    "scripts": {
+        "build": "node ../../scripts/build/build.js utils"
+    },
+    "license": "",
+    "type": "module",
+    "dependencies": {
+        "easy-dom-util": "^0.0.1"
+    },
+    "publishConfig": {
+        "registry": "https://registry.npmjs.org/"
+    },
+    "unpkg": "dist/demo-utils.min.js",
+    "jsdelivr": "dist/demo-utils.min.js"
+}

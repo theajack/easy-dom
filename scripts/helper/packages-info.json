@@ -1,0 +1,14 @@
+[
+    {
+        "name": "tacl-ui",
+        "version": "0.0.1",
+        "dependencies": [
+            "easy-dom-util"
+        ]
+    },
+    {
+        "name": "easy-dom-util",
+        "version": "0.0.1",
+        "dependencies": []
+    }
+]

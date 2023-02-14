@@ -1,0 +1,19 @@
+{
+    "name": "easy-dom-util",
+    "version": "0.0.1",
+    "description": "lerna demo",
+    "main": "dist/demo-main.esm.js",
+    "typings": "dist/demo-main.d.ts",
+    "repository": "git@github.com:theajack/ebuild-template-lerna.git",
+    "author": "tackchen <theajack@qq.com>",
+    "scripts": {
+        "build": "node ../../scripts/build/build.js main"
+    },
+    "license": "",
+    "type": "module",
+    "publishConfig": {
+        "registry": "https://registry.npmjs.org/"
+    },
+    "unpkg": "dist/demo-main.min.js",
+    "jsdelivr": "dist/demo-main.min.js"
+}
