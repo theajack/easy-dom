@@ -11,7 +11,7 @@
     "_serve": "serve scripts/dev",
     "dev": "run-p _dev _serve",
     "build": "npm run init:dev && lerna run build && node scripts/build/mod-package.js",
-    "publish": "node ./scripts/push-release.js",
+    "release": "node ./scripts/push-release.js",
     "info": "node ./scripts/info.js",
     "boot": "lerna bootstrap",
     "init:package": "node ./scripts/init-packages-info.js",
