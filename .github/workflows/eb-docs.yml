@@ -43,7 +43,7 @@ jobs:
           echo "::set-output name=version::${version}"
 
       - name: Build docs # build npm
-        run: npm run eb:docs -- ${{ steps.version.outputs.version }}
+        run: npm run build:docs -- ${{ steps.version.outputs.version }}
 
       - name: Pages # github pages
         uses: JamesIves/github-pages-deploy-action@v4.3.0
@@ -51,5 +51,3 @@ jobs:
           branch: gh-pages
           folder: docs
       
-      - name: Purge # purge cdn # 此处只需要purge docs即可
-        run: npm run eb:purge -- ${{ steps.version.outputs.version }}
