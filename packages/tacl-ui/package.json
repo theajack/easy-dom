@@ -12,7 +12,7 @@
     "license": "",
     "type": "module",
     "dependencies": {
-        "easy-dom-util": "0.1.0"
+        "easy-dom-util": "^0.1.0"
     },
     "publishConfig": {
         "registry": "https://registry.npmjs.org/"
