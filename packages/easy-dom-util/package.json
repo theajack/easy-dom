@@ -4,7 +4,7 @@
     "description": "原生操作dom元素的封装",
     "main": "src/index.ts",
     "typings": "src/index.ts",
-    "repository": "git@github.com:theajack/ebuild-template-lerna.git",
+    "repository": "git@github.com:theajack/easy-dom.git",
     "author": "tackchen <theajack@qq.com>",
     "scripts": {
         "build": "node ../../scripts/build/build.js easy-dom-util"

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "原生操作dom元素的封装",
   "main": "index.js",
-  "repository": "git@github.com:theajack/ebuild-template-lerna.git",
+  "repository": "git@github.com:theajack/easy-dom.git",
   "author": "tackchen <theajack@qq.com>",
   "scripts": {
     "lint": "eslint packages --ext ts",
