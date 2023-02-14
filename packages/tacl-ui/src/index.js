@@ -1,6 +1,11 @@
+/*
+ * @Author: chenzhongsheng
+ * @Date: 2023-02-14 08:57:56
+ * @Description: Coding something
+ */
 /** UI 库 */
 
-import {initStylePool} from './style';
+import { initStylePool } from './style';
 import easyDom from './easydom';
 import _loading from './loading';
 import _toast from './toast';

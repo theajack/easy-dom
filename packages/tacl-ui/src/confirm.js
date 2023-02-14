@@ -16,8 +16,8 @@
     confirm('是否确认')
     confirm('是否确认','确认框')
  */
-import {CONFIRM_STYLE, CONFIRM_TYPE} from './constant';
-import {$, reportStyle, initTaclUI} from './style';
+import { CONFIRM_STYLE, CONFIRM_TYPE } from './constant';
+import { $, reportStyle, initTaclUI } from './style';
 
 reportStyle(initStyle);
 
@@ -123,7 +123,7 @@ const DEFAULT_OPTIONS = {
 
 function initOptions (options, title) {
     if (typeof options === 'string') {
-        options = {title, text: options};
+        options = { title, text: options };
     }
     if (options.type === CONFIRM_TYPE.CONFIRM) {
         if (!options.theme) options.theme = confirm.theme; // 如果没有主题参数 则使用全局主题参数

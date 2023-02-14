@@ -1,6 +1,6 @@
 {
     "name": "easy-dom-util",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "description": "lerna demo",
     "main": "dist/demo-main.esm.js",
     "typings": "dist/demo-main.d.ts",

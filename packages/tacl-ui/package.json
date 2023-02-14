@@ -1,6 +1,6 @@
 {
     "name": "tacl-ui",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "description": "lerna demo",
     "main": "dist/demo-utils.esm.js",
     "typings": "dist/demo-utils.d.ts",
@@ -12,7 +12,7 @@
     "license": "",
     "type": "module",
     "dependencies": {
-        "easy-dom-util": "^0.0.1"
+        "easy-dom-util": "0.1.0"
     },
     "publishConfig": {
         "registry": "https://registry.npmjs.org/"

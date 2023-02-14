@@ -1,6 +1,6 @@
 {
   "name": "easy-dom-util",
-  "version": "0.0.29",
+  "version": "0.1.0",
   "description": "原生操作dom元素的封装",
   "main": "index.js",
   "repository": "git@github.com:theajack/ebuild-template-lerna.git",
@@ -13,6 +13,7 @@
     "build": "npm run init:dev && lerna run build && node scripts/build/mod-package.js",
     "publish": "node ./scripts/push-release.js",
     "info": "node ./scripts/info.js",
+    "boot": "lerna bootstrap",
     "init:package": "node ./scripts/init-packages-info.js",
     "init:dev": "node ./scripts/init-packages-info.js dev",
     "init:dep": "node scripts/init-learn-dep.js"

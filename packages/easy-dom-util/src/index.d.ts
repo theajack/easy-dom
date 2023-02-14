@@ -1,3 +1,8 @@
+/*
+ * @Author: chenzhongsheng
+ * @Date: 2023-02-14 08:57:56
+ * @Description: Coding something
+ */
 export class Ele {
     constructor(parameters: {tag: string, ele: HTMLElement});
     el: HTMLElement;
@@ -15,8 +20,8 @@ export class Ele {
     click(func: (event: Event)=>{}, useCapture?: boolean): Ele;
     on(a:string|object, b?:Function, useCapture?: boolean): Ele;
     render(opt: {
-        html:string, 
-        method?: object, 
+        html:string,
+        method?: object,
         result?: (this:{
             el: Ele,
             method: object
@@ -45,7 +50,7 @@ export class Ele {
     mounted(this: Ele, callback: (el: Ele, parent: Ele)=>{}): Ele;
     src(src: string): Ele;
     query(selector: string, one?: boolean): Ele|null|Array<Ele>;
-    name(name?:string): Ele|string; 
+    name(name?:string): Ele|string;
     hide():Ele;
     show(display?: string):Ele;
     setVisible(visible?: boolean, display?: string): Ele;
@@ -70,9 +75,9 @@ export interface ToolStatic {
     create(tagName?: string): Ele;
     query(s: Ele|string|HTMLElement, all?:boolean): Ele|NodeList|null;
     checkDom(dom: Ele|string|HTMLElement): HTMLElement|NodeList;
-    classPrefix(prefix: string,callback?:(clear:Function)=>{}): void;
+    classPrefix(prefix: string, callback?:(clear:Function)=>{}): void;
     clearClassPrefix(): void;
-    addCommonStyle(a: object,value?:string);
+    addCommonStyle(a: object, value?:string);
     reportStyle(opts:{func: (commonStyle: object)=>{}, id?: string, usePool?:boolean}):void;
     initStylePool(): void;
     registTouchEvent(opts:{

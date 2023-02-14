@@ -1,13 +1,18 @@
-import {checkPrefix, getClassPrefix} from './class-prefix';
+import { checkPrefix, getClassPrefix } from './class-prefix';
 import parseTag from './parseTag';
-import {render} from './render';
+import { render } from './render';
+
+import { IJson, TEvent, TTag } from './type';
 
 export class Ele {
-    constructor ({tag, ele}) {
+
+    el: HTMLElement;
+
+    constructor ({ tag, ele }: {tag: TTag | string, ele: HTMLElement}) {
         if (ele) {
             this.el = ele;
         } else {
-            const res = parseTag(tag, getClassPrefix());
+            const res = parseTag(tag);
             this.el = document.createElement(res.tag);
             if (res.cls) {this.cls(res.cls);}
             if (res.attr) {this.attr(res.attr);}
@@ -31,14 +36,19 @@ export class Ele {
         return this;
     }
 
-    id (id) {
+    id (): string;
+    id (id: string): this;
+    id (id?: string) {
         if (typeof id === 'undefined') {
             return this.attr('id');
         }
         return this.attr('id', id);
     }
 
-    attr (name, value) {
+    attr (name: string): string;
+    attr (name: IJson): IJson;
+    attr (name: string, value: string|number|null): this;
+    attr (name: string|IJson, value?: string | number| null): string|IJson|this {
         if (typeof name === 'object') {
             for (const k in name) {
                 this.el.setAttribute(k, name[k]);
@@ -46,29 +56,33 @@ export class Ele {
             return this;
         }
         if (typeof value === 'undefined') {
-            return this.el.getAttribute(name);
+            return this.el.getAttribute(name) || '';
         }
         if (value === null) {
             this.el.removeAttribute(name);
         } else {
-            this.el.setAttribute(name, value);
+            this.el.setAttribute(name, value + '');
         }
         return this;
     }
 
-    hasAttr (name) {
+    hasAttr (name: string) {
         return this.el.hasAttribute(name);
     }
 
-    rmAttr (name) {
+    rmAttr (name: string) {
         this.el.removeAttribute(name);
         return this;
     }
 
-    style (name, value) {
+    style (name: string[]): IJson;
+    style (name: IJson): this;
+    style (name: string): string;
+    style (name: string, value: string): this;
+    style (name: string[]|IJson|string, value?: string) {
         if (typeof value === 'undefined') {
             if (name instanceof Array) { // 根据数组批量获取样式
-                const style = {};
+                const style: IJson = {};
                 name.forEach((item) => {
                     style[item] = this.style(item);
                 });
@@ -79,17 +93,19 @@ export class Ele {
                 }
                 return this;
             }
-            return getComputedStyle(this.el)[name]; // 返回查询到的样式
+            return getComputedStyle(this.el)[name as any]; // 返回查询到的样式
         }  // 根据name value 设置样式
-        if (typeof value === 'string' && value.indexOf('!important') !== -1) {
-            this.el.style.setProperty(name, checkCssValue(this.el, name, value.substring(0, value.indexOf('!important'))), 'important');
+        if (value.indexOf('!important') !== -1) {
+            this.el.style.setProperty(name as string, checkCssValue(this.el, name, value.substring(0, value.indexOf('!important'))), 'important');
         } else {
-            this.el.style.setProperty(name, checkCssValue(this.el, name, value));
+            this.el.style.setProperty(name as string, checkCssValue(this.el, name, value));
         }
         return this;
     }
 
-    text (text) {
+    text (): string;
+    text (text: string): this;
+    text (text?: string): string | this {
         if (typeof text === 'undefined') {
             return this.el.innerText;
         }
@@ -97,15 +113,21 @@ export class Ele {
         return this;
     }
 
-    value (val) {
+    value (): string;
+    value (val: string): this;
+    value (val?: string): string | this {
         if (typeof val === 'undefined') {
+            // @ts-ignore
             return this.el.value;
         }
+        // @ts-ignore
         this.el.value = val;
         return this;
     }
 
-    html (html) {
+    html (): string;
+    html (html: string): this;
+    html (html?: string): string | this {
         if (typeof html === 'undefined') {
             return this.el.innerHTML;
         }
@@ -113,20 +135,35 @@ export class Ele {
         return this;
     }
 
-    click (func, useCapture) {
+    click (func: (this: HTMLElement, ev: HTMLElementEventMap['click']) => any, useCapture?: boolean) {
         return this.on('click', func, useCapture);
     }
 
-    on (name, func, useCapture = false) {
+    on<K extends keyof HTMLElementEventMap> (
+        name: K,
+        func: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any,
+        useCapture?: boolean
+    ): this;
+    on (
+        name: {[prop in keyof HTMLElementEventMap]: (this: HTMLElement, ev: HTMLElementEventMap[prop]) => any},
+        func?: boolean
+    ): this;
+    on<K extends keyof HTMLElementEventMap> (
+        name: K | {[prop in keyof HTMLElementEventMap]: (this: HTMLElement, ev: HTMLElementEventMap[prop]) => any},
+        func?: Function | boolean,
+        useCapture = false
+    ): this {
         if (typeof name === 'object') {
             for (const k in name) {
-                this.on(k, name[k]);
+                // @ts-ignore
+                this.on(k, name[k], func);
             }
             return this;
         }
         if (typeof func !== 'function') {
             throw new Error('事件类型应该为 function');
         }
+        // @ts-ignore
         this.el.addEventListener(name, func, useCapture);
         return this;
     }
@@ -268,7 +305,7 @@ export class Ele {
             return parent;
         }
         if (this.el.parentElement) {
-            return new Ele({ele: this.el.parentElement});
+            return new Ele({ ele: this.el.parentElement });
         }
         return null;
     }
@@ -322,12 +359,12 @@ export class Ele {
             if (i >= this.el.children.length || i < 0) {
                 return null;
             }
-            return new Ele({ele: this.el.children[i]});
+            return new Ele({ ele: this.el.children[i] });
         }
         if (typeof i === 'string') {
             return this.query(`[el-name="${i}"]`, true);
         }
-        return Array.prototype.slice.apply(this.el.children).map(dom => new Ele({ele: dom}));
+        return Array.prototype.slice.apply(this.el.children).map(dom => new Ele({ ele: dom }));
     }
     brother (i) {
         if (typeof i === 'number') {
@@ -413,10 +450,10 @@ function getCssNumberValue (a, b) {
         } else if (a.has('em')) {
             b = 'em';
         } else {
-            return [parseFloat(a), 'px'];
+            return [ parseFloat(a), 'px' ];
         }
     }
-    return [parseFloat(a.substring(0, a.indexOf(b))), b];
+    return [ parseFloat(a.substring(0, a.indexOf(b))), b ];
 };
 
 
@@ -431,7 +468,7 @@ export function checkDom (el) {
 
 export function query (selector, all) {
     if (selector instanceof HTMLElement) {
-        return new Ele({ele: selector});
+        return new Ele({ ele: selector });
     }
     if (typeof selector === 'object') {
         return selector;
@@ -443,9 +480,9 @@ export function query (selector, all) {
     if (!ele) {
         return null;
     }
-    return new Ele({ele});
+    return new Ele({ ele });
 }
 
 export function create (tag = 'div') {
-    return new Ele({tag});
+    return new Ele({ tag });
 }
