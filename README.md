@@ -4,6 +4,18 @@
 
 ----
 
+<p>
+    <a href="https://ko-fi.com/theajack">
+        <img src="https://img.shields.io/badge/Donate-Ko Fi-ff5f5f" alt="test">
+    </a>    
+    <a href="https://paypal.me/tackchen">
+        <img src="https://img.shields.io/badge/Donate-PayPal-142c8e" alt="test">
+    </a>    
+    <a href="https://shiyix.cn/wx-pay.png">
+        <img src="https://img.shields.io/badge/Donate-Wechat Pay-00c250" alt="test">
+    </a>
+</p>
+
 [中文](https://github.com/theajack/easy-dom/blob/master/README.cn.md) | [Version Log](https://github.com/theajack/easy-dom/blob/master/scripts/version.md) | [Online Use](https://theajack.gitee.io/jsbox?theme=dark&lang=html&lib=https://cdn.jsdelivr.net/npm/easy-dom-util&code=DwZwxgTglgDgLgAhBMBeARACznGIBcA9IWACYB2AdAFYikCmANlAG4SXn1yHkwC2hegEMQATwC0pAPZ9xAVzhRGgkaOl9KfKFVroAfMELho8PQFgAUMFKsEUUqgDkQmDEcHCNluavHYcHwQghDApchApRnpKRikAcwAKAFFVABEZAEoAbktghBSxdI0ARzl6CFEExwBiFzcMygh6cgYIBIBvXLzgvi5MKVJ8Totu0YQhKIg4BLh6AA84DOGxlZCwiKiY+JnMKBBsrtXugHdtaWPKCfLp2YWDkaOEAF9D7qeAGle8ppA5RmmmEsvmNQuFItFYokmJQAEYKOBhe4rD7AoLYPiMfAIAAGqO6wDhODCCAAAkwMISEeR0KT6CxmnAMFcplUABJMWIIADqUggjFIjgy+gAwswwABrBAAWXohkpYUCY1xDyCTwylkMflMQA)
 
 
