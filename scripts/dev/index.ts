@@ -7,9 +7,9 @@
 import $ from 'packages/easy-dom-util';
 import { toast, loading, confirm, alert, pop } from 'packages/tacl-ui';
 
-const txt = $.create('div').text(11).mounted(el => {
+const txt = $.create('div[src=111.11].aa#a-1').text(11).mounted(el => {
     console.log(el, 'mounted');
-}).mount().text();
+}).mount().text('');
 
 console.log(txt);
 

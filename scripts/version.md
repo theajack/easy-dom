@@ -3,6 +3,12 @@
  * @Date: 2023-02-14 23:50:21
  * @Description: Coding something
 -->
+### 0.1.2
+
+1. export enums in tacl-ui
+2. fix easy-dom type declaretion with emmet
+3. fix parse tag problem in attr
+
 ### 0.1.1
 
 fix build bug

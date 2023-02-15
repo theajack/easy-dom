@@ -20,6 +20,15 @@ export default function parseTag (tag: string): IParseResult {
     if (tag.match(/[#\.\[]/) === null) {
         return result;
     }
+    if (tag.indexOf('[') !== -1) {
+        result.attr = {};
+        // ! 先把attr全部替换掉 不然中括号中的 特殊字符会影响其他类型
+        tag = tag.replace(/(\[)(\S*?)(\])/g, (str) => {
+            const arr = cut(str).split('=');
+            (result.attr as IJson)[arr[0]] = arr[1] || '';
+            return '';
+        });
+    }
     // @ts-ignore
     result.tag = cut(tag.match(/^(\S*?)(#|\.|\[)/g)[0], 0);
     if (tag.indexOf('#') !== -1) {
@@ -31,14 +40,6 @@ export default function parseTag (tag: string): IParseResult {
         result.cls = cut(tag.match(/(\.)(\S*?)(#|\[|$)/g)[0]).split('.')
             .join(' ')
             .trim();
-    }
-    if (tag.indexOf('[') !== -1) {
-        result.attr = {};
-        // @ts-ignore
-        tag.match(/(\[)(\S*?)(\])/g).map(item => cut(item).split('='))
-            .forEach((item) => {
-                (result.attr as IJson)[item[0]] = item[1] || '';
-            });
     }
     return result;
 }

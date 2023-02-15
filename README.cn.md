@@ -4,6 +4,18 @@
 
 ----
 
+<p>
+    <a href="https://ko-fi.com/theajack">
+        <img src="https://img.shields.io/badge/Donate-Ko Fi-ff5f5f" alt="test">
+    </a>    
+    <a href="https://paypal.me/tackchen">
+        <img src="https://img.shields.io/badge/Donate-PayPal-142c8e" alt="test">
+    </a>    
+    <a href="https://shiyix.cn/wx-pay.png">
+        <img src="https://img.shields.io/badge/Donate-Wechat Pay-00c250" alt="test">
+    </a>
+</p>
+
 [English](https://github.com/theajack/easy-dom#easy-dom) | [Version Log](https://github.com/theajack/easy-dom/blob/master/scripts/version.md)
 
 [TOC]

@@ -522,7 +522,9 @@ export function exist (selector: string): boolean {
     return !!document.querySelector(selector);
 }
 
-export function create (tag: TTag = 'div') {
+export function create (tag: TTag): Ele;
+export function create (tag?: string): Ele;
+export function create (tag: TTag|string = 'div') {
     return new Ele({ tag });
 }
 function domListToEles (list: (HTMLElement|Element)[]|NodeListOf<Element>|HTMLCollection) {

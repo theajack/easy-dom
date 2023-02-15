@@ -12,7 +12,7 @@ export type TTag =
   'em'| 'embed'| 'figure'| 'footer'| 'header'| 'hr'| 'menu'| 'nav'| 'noscript' |
   'object'| 'progress'| 'section'| 'slot'| 'small'| 'strong'| 'sub'| 'summary'| 'sup'| 'template' |
   'title'| 'var' |
-  'style' | 'meta' | 'head' | 'link' & string;
+  'style' | 'meta' | 'head' | 'link';
 
 export interface IJson<T=any> {
   [prop: string]: T
