@@ -2,8 +2,8 @@
     "name": "easy-dom-util",
     "version": "0.1.3",
     "description": "原生操作dom元素的封装",
-    "main": "dist/easy-dom-util.esm.js",
-    "typings": "dist/easy-dom-util.d.ts",
+    "main": "src/index.ts",
+    "typings": "src/index.ts",
     "repository": "git@github.com:theajack/easy-dom.git",
     "author": "tackchen <theajack@qq.com>",
     "scripts": {
