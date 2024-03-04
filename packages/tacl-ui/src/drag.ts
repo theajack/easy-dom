@@ -84,7 +84,7 @@ class Drag {
         position = null,
         margin = 3, // 上右下左 或者只传入一个数字
     }: IDragOptions) {
-        this.el = $.create().cls(`${prefix}wrapper`);
+        this.el = $.create().class(`${prefix}wrapper`);
         this.el.append($.query(el));
         this.parent = null;
         if (!parent) {
@@ -137,7 +137,7 @@ class Drag {
         this.el.style({
             left: 'auto',
             top: 'auto',
-            'z-index': zIndex,
+            'zIndex': zIndex,
         });
         $.registTouchEvent({
             el: this.el,
@@ -166,6 +166,7 @@ class Drag {
             const left = this.sideLeft ? (this.margin[3]) : (size.width - dom.offsetWidth - this.margin[1]);
             const maxTop = (size.height - dom.offsetHeight - this.margin[0]);
             let top;
+            // @ts-ignore
             if (init || this.top > maxTop) {
                 top = maxTop;
             }

@@ -74,15 +74,15 @@ function init ({
         target.el = {} as any;
         target.lastParent = parent;
         $.classPrefix(prefix);
-        const wrapper = $.create().cls('wrapper');
-        const content = $.create().cls('content');
-        const closeEl = $.create('span').cls('close')
+        const wrapper = $.create().class('wrapper');
+        const content = $.create().class('content');
+        const closeEl = $.create('span').class('close')
             .text('✕')
             .click(() => {
                 close(target);
             });
 
-        const btnEl = $.create('span').cls('btn');
+        const btnEl = $.create('span').class('btn');
 
         wrapper.append([ content, closeEl, btnEl ]);
         $.clearClassPrefix();
@@ -120,7 +120,7 @@ function open ({
     }
 
     $.classPrefix(prefix, () => {
-        target.el.wrapper.cls(`wrapper ${position}${otheClass}`);
+        target.el.wrapper.class(`wrapper ${position}${otheClass}`);
     });
     if (target.customClass) {
         target.el.wrapper.addClass(target.customClass, false);

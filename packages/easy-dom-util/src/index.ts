@@ -7,14 +7,16 @@
 /**
  * 主要用来操作dom的工具方法
  */
-import { checkDom, query, create, exist } from './ele';
+import { checkDom, query, create, exist, collectRef } from './ele';
 import { reportStyle, addCommonStyle, initStylePool } from './style';
 import { registTouchEvent } from './touchEvent';
 import version from './version';
 import { classPrefix, clearClassPrefix } from './class-prefix';
 import { ISize } from './type.d';
+import { dom } from './dom';
 
-export { TEleCommon, Ele } from './ele';
+export { TEleCommon, Ele, collectRef } from './ele';
+export { dom, TDomName } from './dom';
 export * from './type.d';
 
 let fixWindowSize: ISize | null = null;
@@ -75,7 +77,9 @@ const $ = {
     windowSize,
     isMobile,
     version,
-    setWindowSize
+    setWindowSize,
+    dom,
+    collectRef,
 };
 
 export {

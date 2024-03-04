@@ -1,8 +1,21 @@
 import { checkPrefix, getClassPrefix } from './class-prefix';
 import parseTag from './parseTag';
 import { render } from './render';
+import { IStyle, IStyleKey, parseStyleKey } from './style';
 
 import { IJson, TTag } from './type';
+
+export function collectRef <T extends string[]> (...list: T): {
+    [key in T[number]]: Ele;
+} {
+    const refs: any = {};
+    list.forEach(name => {
+        refs[name] = (el: Ele) => {
+            refs[name] = el;
+        };
+    });
+    return refs;
+}
 
 export class Ele {
 
@@ -14,7 +27,7 @@ export class Ele {
         } else {
             const res = parseTag(tag as string);
             this.el = document.createElement(res.tag);
-            if (res.cls) {this.cls(res.cls);}
+            if (res.cls) {this.class(res.cls);}
             if (res.attr) {this.attr(res.attr);}
             if (res.id) {this.id(res.id);}
         }
@@ -23,9 +36,15 @@ export class Ele {
         return this.el;
     }
 
-    cls (): string;
-    cls (cls: string, withPrefix?: boolean): this;
-    cls (cls?: string, withPrefix = true) {
+    ref (el: Ele) {
+        // @ts-ignore
+        el(this);
+        return this;
+    }
+
+    class (): string;
+    class (cls: string, withPrefix?: boolean): this;
+    class (cls?: string, withPrefix = true) {
         if (typeof cls === 'undefined') {
             return this.el.className;
         }
@@ -77,11 +96,11 @@ export class Ele {
         return this;
     }
 
-    style (name: string[]): IJson;
-    style (name: string): string;
-    style (name: IJson): this;
-    style (name: string, value: string): this;
-    style (name: string[]|IJson|string, value?: string) {
+    style (name: IStyle): this;
+    style (name: IStyleKey[]): IStyle;
+    style (name: IStyleKey): string;
+    style <T extends IStyleKey>(name: T, value: IStyle[T]): this;
+    style (name: IStyleKey[]|IStyle|IStyleKey, value?: string|number) {
         if (typeof value === 'undefined') {
             if (name instanceof Array) { // 根据数组批量获取样式
                 const style: IJson = {};
@@ -91,6 +110,7 @@ export class Ele {
                 return style;
             } if (typeof name === 'object') { // 根据json设置样式
                 for (const key in name) {
+                    // @ts-ignore
                     this.style(key, name[key]);
                 }
                 return this;
@@ -98,10 +118,13 @@ export class Ele {
             return getComputedStyle(this.el)[name as any]; // 返回查询到的样式
         }  // 根据name value 设置样式
 
+        const key = parseStyleKey(name as string);
+        value = `${value}`;
+
         if (value.indexOf('!important') !== -1) {
-            this.el.style.setProperty(name as string, checkCssValue(this.el, name as string, value.substring(0, value.indexOf('!important'))), 'important');
+            this.el.style.setProperty(key, checkCssValue(this.el, key, value.substring(0, value.indexOf('!important'))), 'important');
         } else {
-            this.el.style.setProperty(name as string, checkCssValue(this.el, name as string, value));
+            this.el.style.setProperty(key, checkCssValue(this.el, key, value));
         }
         return this;
     }
@@ -217,13 +240,14 @@ export class Ele {
     append (...children: (Ele|Ele[]|null)[]) {
         children.forEach((el) => {
             if (el instanceof Array) {
-                el.forEach((singleEl) => {this.appendSingle(singleEl);});
+                el.forEach((singleEl) => {this.append(singleEl);});
             } else {
                 this.appendSingle(el);
             }
         });
         return this;
     }
+
 
     appendSingle (el: Ele|null) {
         if (el === null) {
@@ -259,7 +283,7 @@ export class Ele {
         if (eles[0] instanceof Array) {
             eles = eles[0];
         }
-        const el = this.child(index);
+        const el = this.children(index);
         eles.forEach((ele) => {
             const item = checkDom(ele);
             if (!item) {
@@ -355,7 +379,7 @@ export class Ele {
     }
 
     index () {
-        const a = this.parent().child();
+        const a = this.parent().children();
         for (let i = 0; i < a.length; i++) {
             if (a[i].el === this.el)
                 return i;
@@ -363,15 +387,23 @@ export class Ele {
         return -1;
     }
     next (i = 1) {
-        return this.parent().child(this.index() + i);
+        return this.parent().children(this.index() + i);
     }
     prev (i = 1) {
         return this.next(-i);
     }
 
-    child(): Ele[];
-    child(i: number|string): Ele;
-    child (i?: number|string) {
+    children (): Ele[];
+    children (i: number|string): Ele;
+    children (...children: (Ele|Ele[]|null)[]): this;
+    children (...children: (Ele|Ele[]|null|number|string)[]) {
+        const i = children[0];
+
+        if (typeof i === 'object') {
+            // @ts-ignore
+            return this.append(...children);
+        }
+
         if (typeof i === 'number') {
             if (i >= this.el.children.length || i < 0) {
                 throw new Error('index is over limit');
@@ -383,13 +415,14 @@ export class Ele {
         }
         return domListToEles(this.el.children);
     }
+
     brother(): Ele[];
     brother(i: number): Ele;
     brother (i?: number) {
         if (typeof i === 'number') {
-            return this.parent().child(i);
+            return this.parent().children(i);
         }
-        return this.parent().child();
+        return this.parent().children();
     }
 
     created (cb: (this: Ele, self: Ele)=>void) {
@@ -436,7 +469,7 @@ export class Ele {
         return this.style('display', 'none');
     }
     show (display = 'block') {
-        return this.style('display', display);
+        return this.style('display', display as any);
     }
     setVisible (visible = true, display = 'block') {
         return visible ? this.show(display) : this.hide();

@@ -31,10 +31,8 @@ npm i easy-dom-util
 使用
 
 ```js
-import $ from 'easy-dom-util';
-
-let el = $.create('div'); // 返回一个 Ele 类型的元素，封装了dom操作的方法
-...
+import {dom} from 'easy-dom-util';
+let el = dom.div; // 返回一个 Ele 类型的元素，封装了dom操作的方法
 ```
 
 #### 0.2 script 标签引入
@@ -44,7 +42,7 @@ let el = $.create('div'); // 返回一个 Ele 类型的元素，封装了dom操�
 <!-- or -->
 <!-- <script src="https://cdn.jsdelivr.net/npm/easy-dom-util@x.x.x"></script> -->
 <script>
-    var el = EasyDom.create('div');
+    var el = EasyDom.dom.div;
 </script>
 ```
 
@@ -68,7 +66,7 @@ Ele 元素上面的方法大都支持链式调用，Ele元素有以下方法可�
 | value | [string] | string/Ele | 设置或获取元素value |
 | html | [string] | string/Ele | 设置或获取元素innerHTML |
 | empty | -- | Ele | 清空元素内容 |
-| cls | [string] | string/Ele | 给元素设置类或者获取元素的类名 |
+| class | [string] | string/Ele | 给元素设置类或者获取元素的类名 |
 | id | [string] | string/Ele | 给元素设置id或者获取元素的id |
 | click | function | Ele | 设置元素 click 事件 |
 | on | json/name,func | Ele | 设置元素的事件 |
@@ -85,7 +83,8 @@ Ele 元素上面的方法大都支持链式调用，Ele元素有以下方法可�
 | remove | int/Ele/-- | Ele/-- | 根据位置或者ele元素删除孩子节点，或删除自身 |
 | parent | [index] | Ele/null | 获取元素的父元素或第n级父元素 |
 | index | -- | number | 获取元素在父元素中的位置 |
-| child | [index] | Ele/Array[Ele]/null | 获取第几个或全部子元素 |
+| children | [index] | Ele/Array[Ele]/null | 获取第几个或全部子元素 |
+| children | ...Array[dom/Ele] / Array[dom/Ele] | Ele | 给元素插入孩子节点 |
 | next | [index] | Ele/null| 获取元素的前一个或前第n个元素 |
 | prev | [index] | Ele/null | 获取元素的后一个或后第n个元素 |
 | exe | function(dom){} | Ele | 以Ele为this执行一个方法，回调参数为对应的dom元素 |
@@ -97,8 +96,8 @@ Ele 元素上面的方法大都支持链式调用，Ele元素有以下方法可�
 基本使用
 
 ```js
-let el = $.create('div')
-    .cls('easy-dom')
+let el = dom.div
+    .class('easy-dom')
     .text('easy-dom')
     .click(()=>{
         alert('click')
@@ -108,7 +107,7 @@ let el = $.create('div')
 emmet 风格
 
 ```js
-let el = $.create('div#app.cls1.cls2[attr1=1][attr2]')
+let el = dom('div#app.cls1.cls2[attr1=1][attr2]')
 ```
 
 render方法
@@ -171,18 +170,20 @@ api 列表
 详细使用
 
 ```js
+import $, {dom} from 'easy-dom-util';
 $.classPrefix('el-test-');
-$.create('div').cls('1') // class = el-test-1
+dom.div.class('1') // class = el-test-1
 $.clearClassPrefix();
 // 或者
 $.classPrefix('el-test-',()=>{
-    $.create('div').cls('1') // class = el-test-1
+    dom.div.class('1') // class = el-test-1
 });
 ```
 
 样式相关
 
 ```js
+import $ from 'easy-dom-util';
 $.addCommonStyle({
     fontSize: '12px',
     textCenter: 'text-align:center;'
@@ -219,6 +220,7 @@ function initStyle(common){ // common 为公用样式
 registTouchEvent
 
 ```js
+import $ from 'easy-dom-util';
 $.registTouchEvent({
     el: 'dom/Ele/selector',
     touchStart(touchList){

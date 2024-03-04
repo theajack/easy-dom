@@ -53,13 +53,13 @@ function init (
         target.el = {} as any;
         target.lastParent = parent;
         $.classPrefix(prefix);
-        const mask = $.create().cls('mask');
-        const wrapper = $.create().cls('wrapper')
+        const mask = $.create().class('mask');
+        const wrapper = $.create().class('wrapper')
             .html(/* html*/`
 <svg class="g-loading-circular" viewBox="0 0 50 50">
     <circle class="g-loading-path" cx="25" cy="25" r="20" fill="none"></circle>
 </svg>`);
-        target.el.text = $.create().cls('text');
+        target.el.text = $.create().class('text');
         wrapper.append(target.el.text);
         $.clearClassPrefix();
         initTaclUI(mask);
@@ -70,7 +70,7 @@ function init (
         target.lastParent = parent;
         parent.append(target.el.mask);
     }
-    target.el.mask.style('background-color', backgroundOpacity ? `rgba(0,0,0,${backgroundOpacity})` : 'transparent');
+    target.el.mask.style('backgroundColor', backgroundOpacity ? `rgba(0,0,0,${backgroundOpacity})` : 'transparent');
     open(text, time, target);
 }
 

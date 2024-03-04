@@ -72,14 +72,14 @@ function initTarget (target: IConfirm, options: IConfirmOptions) {
         target.el = {};
         target.lastParent = parent;
         $.classPrefix(prefix);
-        const mask = $.create().cls('mask');
-        const box = $.create().cls('box');
-        const title = $.create().cls('title');
-        const content = $.create().cls('content');
-        const btnw = $.create().cls('btn-w');
-        const btnCancel = $.create().cls('btn');
-        const btnConfirm = $.create().cls('btn confirm');
-        const btnClose = $.create().cls('close')
+        const mask = $.create().class('mask');
+        const box = $.create().class('box');
+        const title = $.create().class('title');
+        const content = $.create().class('content');
+        const btnw = $.create().class('btn-w');
+        const btnCancel = $.create().class('btn');
+        const btnConfirm = $.create().class('btn confirm');
+        const btnClose = $.create().class('close')
             .text('✕');
         $.clearClassPrefix();
         initTaclUI(mask);
@@ -168,7 +168,7 @@ function init (
 
     initTarget(target, options);
 
-    target.el.box.cls(`${prefix}box ${prefix}type-${options.type}`);
+    target.el.box.class(`${prefix}box ${prefix}type-${options.type}`);
 
     target.el.title.text(options.title);
 
@@ -210,7 +210,7 @@ function open (target: IConfirm) {
     target.el.isOpen = true;
     target.el.mask.style('display', 'block');
     window.setTimeout(() => {
-        console.log(target.el.mask);
+        // console.log(target.el.mask);
         target.el.mask.addClass(`${prefix}open`);
         if (target.onopen) {
             const _onopen = target.onopen;

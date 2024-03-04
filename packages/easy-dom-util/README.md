@@ -32,10 +32,8 @@ npm i easy-dom-util
 use
 
 ```js
-import $ from'easy-dom-util';
-
-let el = $.create('div'); // returns an element of type Ele, which encapsulates the method of dom operation
-...
+import {dom} from 'easy-dom-util';
+let el = dom.div; // Returns an element of type Ele, encapsulating the method of dom operation
 ```
 
 #### 0.2 script tag introduction
@@ -45,170 +43,168 @@ let el = $.create('div'); // returns an element of type Ele, which encapsulates 
 <!-- or -->
 <!-- <script src="https://cdn.jsdelivr.net/npm/easy-dom-util@x.x.x"></script> -->
 <script>
-    var el = EasyDom.create('div');
+     var el = EasyDom.dom.div;
 </script>
 ```
 
 ### 1. Ele object
 
-easy-dom encapsulates the dom element, and each dom element will be encapsulated into an Ele element
+easy-dom encapsulates dom elements. Each dom element will be encapsulated into an Ele element.
 
-Most of the methods on the Ele element support chained calls. The Ele element has the following methods for use:
+Most of the methods on the Ele element support chain calls. The following methods are available for the Ele element:
 
-A list of methods, used in detail below:
+The method list, detailed usage is below:
 
-| Method | Parameters | Return Value | Description |
+| Method | Parameters | Return value | Description |
 | :--: | :--: | :--: | :--: |
-| dom | - | HTMLElement | Return the corresponding native dom element |
+| dom | -- | HTMLElement | Returns the corresponding native dom element |
 | attr | json/name,value/-- | Ele/string/Ele | Set or get element attributes |
-| data | json/name/null/--,value/null/-- | any | Temporarily store and manipulate some data on dom elements |
-| hasAttr | string | boolean | Determine whether there is an attribute |
+| data | json/name/null/--,value/null/-- | any | Temporarily store and operate some data on dom elements |
+| hasAttr | string | boolean | Determine whether there is a certain attribute |
 | rmAttr | string | Ele/string/Ele | Delete attribute |
 | style | json/name,value | Ele/string/Ele | Set or get element style |
 | text | [string] | string/Ele | Set or get element innerText |
 | value | [string] | string/Ele | Set or get element value |
-| html | [string] | string/Ele | Set or get element innerHTML |
-| empty | - | Ele | Empty element content |
-| cls | [string],[withPrefix=boolean] | string/Ele | Set the class of the element or get the class name of the element |
-| id | [string] | string/Ele | Set the id of the element or get the id of the element |
+| html | [string] | string/Ele | Set or get the element innerHTML |
+| empty | -- | Ele | Clear element content |
+| class | [string] | string/Ele | Set the class for the element or get the class name of the element |
+| id | [string] | string/Ele | Set id to element or get element's id |
 | click | function | Ele | Set element click event |
 | on | json/name,func | Ele | Set the event of the element |
-| render | {html,method={},result=null} | Ele | Render element |
+| render | {html,method={},result=null} | Ele | render element |
 | addClass | string | Ele | Add class to element |
 | rmClass | string | Ele | Remove a class |
-| hasClass | string | boolean | Determine whether there is a class |
-| replaceClass | string,string | Ele | Replacement class |
-| append | ...Array[dom/Ele] / Array[dom/Ele] | Ele | Insert child node to element |
-| appendSingle | dom/Ele | Ele | Insert child node to element |
+| hasClass | string | boolean | Determine whether there is a certain class |
+| replaceClass | string,string | Ele | Replace class |
+| append | ...Array[dom/Ele] / Array[dom/Ele] | Ele | Insert child nodes into elements |
 | insert | index, ...Array[dom/Ele] / Array[dom/Ele] | Ele | Insert child at specified position |
-| prepend | ...Array[dom/Ele] / Array[dom/Ele] | Ele | Head Insert Child |
-| before | ...Array[dom/Ele] / Array[dom/Ele] | Ele | Insert sibling elements in front of elements |
-| after | ...Array[dom/Ele] / Array[dom/Ele] | Ele | Insert an element of the same level after the element |
-| remove | int/Ele/-- | Ele/-- | Delete child nodes according to position or ele element, or delete itself |
-| parent | [index] | Ele/null | Get the parent element or the nth level parent element of an element |
-| index | - | number | Get the position of the element in the parent element |
-| child | [index] | Ele/Array[Ele]/null | Get how many or all child elements |
-| next | [index] | Ele/null| Get the previous or previous nth element of an element |
-| prev | [index] | Ele/null | Get the next or last nth element of an element |
-| exe | function(dom){} | Ele | Use Ele as this to execute a method, and the callback parameter is the corresponding dom element |
+| prepend | ...Array[dom/Ele] / Array[dom/Ele] | Ele | Head-insert child |
+| before | ...Array[dom/Ele] / Array[dom/Ele] | Ele | Insert sibling elements before the element |
+| after | ...Array[dom/Ele] / Array[dom/Ele] | Ele | Insert sibling elements after the element |
+| remove | int/Ele/-- | Ele/-- | Remove child nodes based on position or ele element, or delete itself |
+| parent | [index] | Ele/null | Get the parent element or nth-level parent element of the element |
+| index | -- | number | Get the position of the element in the parent element |
+| children | [index] | Ele/Array[Ele]/null | Get the first or all child elements |
+| children | ...Array[dom/Ele] / Array[dom/Ele] | Ele | Insert child nodes into elements |
+| next | [index] | Ele/null| Get the previous or nth element of the element |
+| prev | [index] | Ele/null | Get the next or nth element after the element |
+| exe | function(dom){} | Ele | Execute a method with Ele as this, and the callback parameter is the corresponding dom element |
 | src | string | Ele | Set the src attribute of dom |
-| query | selector | Array[Ele] | Query all children of an element based on the css selector |
-| name | string | Ele | Add name to element or query element based on name |
-| hide | - | Ele | hide elements |
-| show | [display] | Ele | Display element |
-| setVisible | [visible],[display] | Ele | Display element |
+| query | selector | Array[Ele] | Query all children of an element based on css selector |
 
-Some api usage examples:
+Some API usage examples:
 
-Basic use
+Basic usage
 
 ```js
-let el = $.create('div')
-    .cls('easy-dom')
-    .text('easy-dom')
-    .click(()=>{
-        alert('click')
-    })
+let el = dom.div
+     .class('easy-dom')
+     .text('easy-dom')
+     .click(()=>{
+         alert('click')
+     })
 ```
 
 emmet style
 
 ```js
-let el = $.create('div#app.cls1.cls2[attr1=1][attr2]')
+let el = dom('div#app.cls1.cls2[attr1=1][attr2]')
 ```
 
 render method
 
 ```js
 el.render({
-    method:{
-        alert(text){
-            // this: {el,bindEl,self,method}
-            console.log(this);
-            window.alert(text);
-        }
-    },
-    result(el){
-        console.log(el.div1,el.div2);
-    },
-    // Using the es6-string-html plugin in vscode will make the following html with syntax highlighting
-    html:/*html*/`
-        <div @el='div1' @event=alert('test')></div>
-        <div @el='div2'></div>
-    `
+     method:{
+         alert(text){
+             // this : {el,bindEl,self,method}
+             console.log(this);
+             window.alert(text);
+         }
+     },
+     result(el){
+         console.log(el.div1,el.div2);
+     },
+     // Using the es6-string-html plug-in in vscode will make the following html have syntax highlighting
+     html:/*html*/`
+         <div @el='div1' @event=alert('test')></div>
+         <div @el='div2'></div>
+     `
 })
 ```
 
-.data() usage
+.data() Usage
 
 ```js
 el.data(); // Get data object
 el.data(null); // Clear the data object
-el.data('name','test'); // set a data
+el.data('name', 'test'); // Set a data
 el.data('name'); // Get a data
-el.data('name', null); // remove a data
-el.data({ // batch operation
-    name: null, // remove a data
-    age: 12 // set a data
+el.data('name', null); // Remove a data
+el.data({ // Batch operation
+     name: null, // Remove a data
+     age: 12 //Set a data
 });
 ```
 
-The only attribute of the Ele element is .el, get the corresponding dom element
+The Ele element has only one attribute, which is .el. Get the corresponding dom element.
 
 ### 2. api list
 
 api list
 
-| api | Parameters | Return value | Description |
+| api | parameters | return value | description |
 | :--: | :--: | :--: | :--: |
 | create | string | Ele | Generate an Ele element based on tag |
-| query | selector[,boolean] | Ele/NodeList/null | Query element, the bool parameter behind indicates whether to query all elements, otherwise only the first one is queried |
-| checkDom | string/selector/HTMLElement | HTMLElement/NodeList | Get dom element |
-| classPrefix | string[,function] | - | Add a default prefix to the class name. If a callback function is used as a parameter, the prefix will be cleared after the callback is completed, otherwise please manually call clearClassPrefix to clear |
-| clearClassPrefix | - | - | Clear class name prefix |
-| addCommonStyle | object/name,value | - | Add css variables and common styles |
-| reportStyle | {function, id ='el-style', usePool = false} | - | Report css style |
-| initStylePool | - | - | Initialize style pool |
-| registTouchEvent | {el[dom/Ele/selector],touchStart,touchMove,touchEnd} | - | Touch event package on mobile terminal, compatible with pc terminal |
-| windowSize | - | {width:height} | Get browser size |
-| version | Attributes | - | easy-dom version information |
+| query | selector[,boolean] | Ele/NodeList/null | Query elements, the following bool parameter indicates whether to query all elements, otherwise only the first one |
+| checkDom | string/selector/HTMLElement | HTMLElement/NodeList | Get dom elements |
+| classPrefix | string[,function] | -- | Add a default prefix to the class name. If a callback function is used as a parameter, the prefix will be cleared after the callback is completed. Otherwise, please manually call clearClassPrefix to clear |
+| clearClassPrefix | -- | -- | Clear class name prefix |
+| addCommonStyle | object/name,value | -- | Add css variables and common styles |
+| reportStyle | {function, id = 'el-style', usePool = false} | -- | Report css style |
+| initStylePool | -- | -- | Initialize style pool |
+| registTouchEvent | {el[dom/Ele/selector],touchStart,touchMove,touchEnd} | -- | Mobile touch event encapsulation, compatible with PC |
+| windowSize | -- | {width:height} | Get browser size |
+| version | properties | -- | easy-dom version information |
 
 
 Detailed use
 
 ```js
+import $, {dom} from 'easy-dom-util';
 $.classPrefix('el-test-');
-$.create('div').cls('1') // class = el-test-1
+dom.div.class('1') // class = el-test-1
 $.clearClassPrefix();
 // or
 $.classPrefix('el-test-',()=>{
-    $.create('div').cls('1') // class = el-test-1
+     dom.div.class('1') // class = el-test-1
 });
 ```
 
-Style related
+style related
 
 ```js
 $.addCommonStyle({
-    fontSize: '12px',
-    textCenter:'text-align:center;'
+     fontSize: '12px',
+     textCenter: 'text-align:center;'
 })
 
 $.reportStyle({
-    func:initStyle,
-    id:'MyStyle' // id of style tag
-}); // Do not use the style pool, the style will be added to the head immediately
+     func:initStyle,
+     id: 'MyStyle' // The id of the style tag
+}); // Without using the style pool, the style will be added to the head immediately
 
 // or
+
 $.reportStyle({
      func:initStyle,
-     id:'MyStyle', // id of style tag
+     id: 'MyStyle', // id of style tag
      usePool: true
-}); // Use the style pool, the style will be added to the head after calling initStylePool. When there are many scattered styles, it is recommended to use the style pool
+}); // Use the style pool. The style will be added to the head after calling initStylePool. When there are many scattered styles, it is recommended to use the style pool.
 $.initStylePool();
 
-function initStyle(common){ // common is a common style
-     // Using the es6-string-css plugin in vscode will make the following css syntax highlighting
+function initStyle(common){ // common is the public style
+     // Using the es6-string-css plug-in in vscode will make the following css with syntax highlighting
      return /*css*/`
          .el-test-1{
              color:#f44;
@@ -221,11 +217,11 @@ function initStyle(common){ // common is a common style
      `
 }
 ```
-registTouchEvent
+registerTouchEvent
 
 ```js
 $.registTouchEvent({
-     el:'dom/Ele/selector',
+     el: 'dom/Ele/selector',
      touchStart(touchList){
      },
      touchMove(touchList){

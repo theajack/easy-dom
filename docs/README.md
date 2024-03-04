@@ -104,7 +104,7 @@ Basic use
 
 ```js
 let el = $.create('div')
-    .cls('easy-dom')
+    .class('easy-dom')
     .text('easy-dom')
     .click(()=>{
         alert('click')
@@ -178,11 +178,11 @@ Detailed use
 
 ```js
 $.classPrefix('el-test-');
-$.create('div').cls('1') // class = el-test-1
+$.create('div').class('1') // class = el-test-1
 $.clearClassPrefix();
 // or
 $.classPrefix('el-test-',()=>{
-    $.create('div').cls('1') // class = el-test-1
+    $.create('div').class('1') // class = el-test-1
 });
 ```
 
