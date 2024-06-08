@@ -3,7 +3,7 @@ import parseTag from './parseTag';
 import { render } from './render';
 import { IStyle, IStyleKey, parseStyleKey } from './style';
 
-import { IJson, TTag } from './type';
+import { IJson, ISize, TTag } from './type';
 
 export function collectRef <T extends string[]> (...list: T): {
     [key in T[number]]: Ele;
@@ -250,6 +250,7 @@ export class Ele {
 
 
     appendSingle (el: Ele|null) {
+        console.log('appendSingle', el);
         if (el === null) {
             return this;
         }
@@ -267,8 +268,18 @@ export class Ele {
                     dom.__ed_mounted.call(El, El, this);
                 }
                 dom.__ed_mounted = null;
+            }, 0);
+        }
+
+        if (typeof dom.__ed_size_ready === 'function') {
+            sizeReady(dom, (size) => {
+                if (typeof dom.__ed_size_ready === 'function') {
+                    const El = query(dom);
+                    dom.__ed_size_ready.call(El, El, size, this);
+                }
             });
         }
+
         return this;
     }
 
@@ -436,6 +447,12 @@ export class Ele {
         return this;
     }
 
+    sizeReady (fn: (this: Ele, self: Ele, size: ISize, parent: Ele)=>void) {
+        // @ts-ignore
+        this.el.__ed_size_ready = fn;
+        return this;
+    }
+
     src(): string;
     src(v: string): this;
     src (v?: string) {
@@ -562,4 +579,36 @@ export function create (tag: TTag|string = 'div') {
 }
 function domListToEles (list: (HTMLElement|Element)[]|NodeListOf<Element>|HTMLCollection) {
     return [].slice.apply(list).map((dom: HTMLElement) => new Ele({ ele: dom }));
+}
+
+function sizeReady (dom: HTMLElement, fn: (size: ISize)=>void) {
+
+    const returnSize = () => {fn({ width: dom.offsetWidth, height: dom.offsetHeight });};
+
+    const hasSize = () => (dom.offsetWidth && dom.offsetHeight);
+
+    if (hasSize()) {
+        return returnSize();
+    }
+
+    if (window.ResizeObserver) {
+        const observer = new ResizeObserver((entries) => {
+            entries.forEach(() => {
+                if (hasSize()) {
+                    returnSize();
+                    observer.disconnect();
+                }
+            });
+        });
+        observer.observe(dom);
+    } else {
+        const interval = setInterval(() => {
+            if (hasSize()) {
+                returnSize();
+                clearInterval(interval);
+            }
+        }, 50);
+    }
+
+
 }

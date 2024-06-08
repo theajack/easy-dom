@@ -5,7 +5,6 @@
  */
 import { TEleCommon } from './ele';
 import $ from './index';
-import { IJson } from './type';
 
 const df = function () {};
 
@@ -31,20 +30,20 @@ export function registTouchEvent ({
         $.query(el).on({
             mousedown: (e) => {
                 isMouseDown = true;
-                touchStart(buildTouchWithMouse(e, 'touchstart'));
+                touchStart(mouseToTouchEvent(e, 'touchstart'));
             }
         });
         $.query(document.body).on({
             mousemove: (e) => {
                 e.preventDefault(); // 阻止默认的处理方式(防止拖拽选中效果)
                 if (isMouseDown) {
-                    touchMove(buildTouchWithMouse(e, 'touchmove'));
+                    touchMove(mouseToTouchEvent(e, 'touchmove'));
                 }
             },
             mouseup: (e) => {
                 if (isMouseDown) {
                     isMouseDown = false;
-                    touchEnd(buildTouchWithMouse(e, 'touchend'));
+                    touchEnd(mouseToTouchEvent(e, 'touchend'));
                 }
             }
         });
@@ -56,7 +55,7 @@ function isMobile () {
     return (/Android|iPad|iPhone|iPod|BlackBerry/i.test(navigator.userAgent));
 }
 
-function buildTouchWithMouse (event: IJson<any>, type: 'touchstart'|'touchmove'|'touchend'): TouchEvent {
+export function mouseToTouchEvent (event: any, type: 'touchstart'|'touchmove'|'touchend'): TouchEvent {
     const es = [ {
         clientX: event.clientX,
         clientY: event.clientY,

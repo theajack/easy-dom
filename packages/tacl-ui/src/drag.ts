@@ -2,8 +2,9 @@
 // import {$, isUndf, df, registTouchEvent} from '../bridge';
 // import {reportStyle} from '../style';
 
-import { Ele, TEleCommon } from 'easy-dom-util';
+import { Ele, TEleCommon, query } from 'easy-dom-util';
 import { $, reportStyle } from './style';
+import { isPC } from './utils';
 
 /**
  * 拖动组件
@@ -85,7 +86,7 @@ class Drag {
         margin = 3, // 上右下左 或者只传入一个数字
     }: IDragOptions) {
         this.el = $.create().class(`${prefix}wrapper`);
-        this.el.append($.query(el));
+        this.el.el.appendChild(query(el).el);
         this.parent = null;
         if (!parent) {
             parent = $.query(document.body);
@@ -139,12 +140,42 @@ class Drag {
             top: 'auto',
             'zIndex': zIndex,
         });
+
+
+        let isDown = false;
         $.registTouchEvent({
             el: this.el,
-            touchStart: this.touchStart.bind(this),
-            touchMove: this.touchMove.bind(this),
-            touchEnd: this.touchEnd.bind(this),
+            touchStart: (e) => {
+                this.touchStart(e);
+                isDown = true;
+            },
+            touchMove: (e) => {
+                if (!isDown) return;
+                this.touchMove(e);
+            },
+            touchEnd: (e) => {
+                if (!isDown) return;
+                this.touchEnd(e);
+                isDown = false;
+            }
         });
+
+        if (isPC()) {
+            window.addEventListener('mousemove', e => {
+                if (!isDown) return;
+                this.touchMove(
+                    $.mouseToTouchEvent(e, 'touchmove')
+                );
+            });
+            window.addEventListener('mouseup', e => {
+                if (!isDown) return;
+                this.touchEnd(
+                    $.mouseToTouchEvent(e, 'touchend')
+                );
+                isDown = false;
+            });
+        }
+
     }
     getParentSize () {
         if (this.parent === null) {

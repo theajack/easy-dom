@@ -91,6 +91,84 @@ Ele 元素上面的方法大都支持链式调用，Ele元素有以下方法可�
 | src | string | Ele | 设置dom的src属性 |
 | query | selector | Array[Ele] | 根据css选择器查询元素的所有孩子 |
 
+完整api声明：
+
+```ts
+declare class Ele {
+    el: HTMLElement;
+    constructor({ tag, ele }: {
+        tag?: TTag | string;
+        ele?: HTMLElement;
+    });
+    dom(): HTMLElement;
+    ref(el: Ele): this;
+    class(): string;
+    class(cls: string, withPrefix?: boolean): this;
+    id(): string;
+    id(id: string): this;
+    attr(name: string): string;
+    attr(name: IJson): this;
+    attr(name: string, value: string | number | null): this;
+    hasAttr(name: string): boolean;
+    rmAttr(name: string): this;
+    style(name: IStyle): this;
+    style(name: IStyleKey[]): IStyle;
+    style(name: IStyleKey): string;
+    style<T extends IStyleKey>(name: T, value: IStyle[T]): this;
+    text(): string;
+    text(text: string | number): this;
+    value(): string;
+    value(val: string | number): this;
+    html(): string;
+    html(html: string | number): this;
+    click(func: (this: HTMLElement, ev: HTMLElementEventMap['click'], el: Ele) => any, useCapture?: boolean): this;
+    on<K extends keyof HTMLElementEventMap>(name: K, func: (this: HTMLElement, ev: HTMLElementEventMap['click'], el: Ele) => any, useCapture?: boolean): this;
+    on(name: {
+        [prop in keyof HTMLElementEventMap]?: (this: HTMLElement, ev: HTMLElementEventMap[prop], el: Ele) => any;
+    }, func?: boolean): this;
+    addClass(cls: string, withPrefix?: boolean): this;
+    hasClass(cls: string, withPrefix?: boolean): boolean;
+    rmClass(cls: string, withPrefix?: boolean): this;
+    replaceClass(a: string, b: string, withPrefix?: boolean): this;
+    toggleClass(name: string): this;
+    append(...children: (Ele | Ele[] | null)[]): this;
+    appendSingle(el: Ele | null): this;
+    name(): string;
+    name(name: string): this;
+    insert(index: number | string, ...eles: (string | Ele | HTMLElement)[]): this;
+    prepend(...eles: (string | Ele | HTMLElement)[]): this;
+    before(...eles: (string | Ele | HTMLElement)[]): Ele;
+    after(...eles: (string | Ele | HTMLElement)[]): Ele;
+    remove(arg?: number | Ele): this;
+    empty(): this;
+    parent(index?: number): Ele;
+    data(name: string): any;
+    data(): IJson;
+    data(name: IJson): this;
+    data(name: string, value: any): this;
+    index(): number;
+    next(i?: number): Ele;
+    prev(i?: number): Ele;
+    children(): Ele[];
+    children(i: number | string): Ele;
+    children(...children: (Ele | Ele[] | null)[]): this;
+    brother(): Ele[];
+    brother(i: number): Ele;
+    created(cb: (this: Ele, self: Ele) => void): this;
+    mounted(fn: (this: Ele, self: Ele, parent: Ele) => void): this;
+    sizeReady(fn: (this: Ele, self: Ele, size: ISize, parent: Ele) => void): this;
+    src(): string;
+    src(v: string): this;
+    render(options?: {}): any;
+    query(selector: string, one: true): Ele;
+    query(selector: string, one?: false): Ele[];
+    hide(): this;
+    show(display?: string): this;
+    setVisible(visible?: boolean, display?: string): this;
+    mount(ele?: TEleCommon): this;
+}
+```
+
 部分api使用实例：
 
 基本使用

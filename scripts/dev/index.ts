@@ -7,7 +7,7 @@
 import { query, create } from 'packages/easy-dom-util';
 import { dom } from 'packages/easy-dom-util/src/dom';
 import { collectRef } from 'packages/easy-dom-util/src/ele';
-import { toast, loading, confirm, alert, pop } from 'packages/tacl-ui';
+import { toast, loading, confirm, alert, pop, drag } from 'packages/tacl-ui';
 
 const txt = create('div[src=111.11].aa#a-1').text(11).mounted(el => {
     console.log(el, 'mounted');
@@ -44,23 +44,6 @@ create('button');
 
 dom.div.text('');
 
-function KeyboardBox () {
-
-    const refs = collectRef('list');
-
-    window.refs = refs;
-
-    return dom.div.class('aa').style({
-        position: 'relative'
-    }).ref(refs.list).text('xx').children(
-        dom.button.text('111').click(() => {
-            alert('1');
-        }),
-        dom.span.text('111'),
-        dom.span.text('222'),
-    );
-}
-
 function List () {
     const list = [ 1, 2, 3 ];
     const refs = collectRef('list');
@@ -82,5 +65,14 @@ function List () {
         );
 }
 query('body').append(List());
-// query('body').append(KeyboardBox());
 
+query('body').append(
+    create('div').style({
+        width: '20px',
+        height: '20px',
+        backgroundColor: '#222'
+    }).sizeReady((el, size) => {
+        console.log(size);
+        drag({ el });
+    })
+);

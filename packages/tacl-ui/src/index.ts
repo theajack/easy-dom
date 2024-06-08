@@ -6,7 +6,7 @@
 /** UI 库 */
 
 import { initStylePool } from './style';
-import tool from './easydom';
+import { dom, tool } from './easydom';
 import loading from './loading';
 import toast from './toast';
 import confirm from './confirm';
@@ -23,6 +23,7 @@ initStylePool();
 
 export {
     tool,
+    dom,
     loading,
     toast,
     confirm,

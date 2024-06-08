@@ -3,6 +3,17 @@
  * @Date: 2023-02-14 23:50:21
  * @Description: Coding something
 -->
+### 0.1.4
+
+1. fix drag 在pc端的bug
+2. 增加 mouseToTouchEvent
+3. 增加 sizeReady api
+
+### 0.1.3
+
+1. easy-dom-util 增加 dom api
+2. 优化 style
+
 ### 0.1.2
 
 1. export enums in tacl-ui

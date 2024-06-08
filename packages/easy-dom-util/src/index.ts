@@ -9,7 +9,7 @@
  */
 import { checkDom, query, create, exist, collectRef } from './ele';
 import { reportStyle, addCommonStyle, initStylePool } from './style';
-import { registTouchEvent } from './touchEvent';
+import { mouseToTouchEvent, registTouchEvent } from './touchEvent';
 import version from './version';
 import { classPrefix, clearClassPrefix } from './class-prefix';
 import { ISize } from './type.d';
@@ -74,6 +74,7 @@ const $ = {
     initStylePool,
 
     registTouchEvent,
+    mouseToTouchEvent,
     windowSize,
     isMobile,
     version,
@@ -96,7 +97,7 @@ export {
     windowSize,
     isMobile,
     version,
-    setWindowSize
+    setWindowSize,
 };
 
 export type TEasyDomUtil = typeof $;

@@ -6,7 +6,7 @@
 /* 添加style样式*/
 // import {$} from './bridge';
 // import commonStyle from './common-ui/commonStyle';
-import tool from './easydom';
+import { tool } from './easydom';
 import commonStyle from './commonStyle';
 import { Ele, IJson } from 'easy-dom-util';
 export const $ = tool;
