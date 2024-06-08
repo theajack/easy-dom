@@ -91,7 +91,7 @@ Ele 元素上面的方法大都支持链式调用，Ele元素有以下方法可�
 | src | string | Ele | 设置dom的src属性 |
 | query | selector | Array[Ele] | 根据css选择器查询元素的所有孩子 |
 
-完整api声明：
+完整api声明如下:
 
 ```ts
 declare class Ele {
